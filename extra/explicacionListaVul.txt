@@ -1,0 +1,16 @@
+I - Vulnerabilidades de intrusion
+EP - Vulnerabilidades de escalada de privilegios
+
+I1 - Hydra  ssh -> Hacer fuerza bruta al protocolo ssh. 
+I2 - Hydra smb y esteganografía -> Hacer fuerza bruta al protocolo smb y estenografia a la imagen encontrada.
+I3 - Hydra SMB/FTP y ssh con id_rsa con/sin password -> Hacer fuerza bruta al protocolo smb/ftp, romper la pass del id_rsa y conectar por ssh.
+I4 - Hydra SMB/FTP y winrm -> Hacer fuerza bruta al protocolo smb/ftp y conectar por winrm.
+I5 - SMB Relay -> Envenenar red, conseguir hash y romper.
+
+I* - SNMP -> SNMPwalk
+
+
+Lolbas -> EP1, EP2, EP3
+EP1 - nc.exe
+EP2 - cmstp.exe
+EP3 - explorer.exe

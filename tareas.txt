@@ -1,0 +1,104 @@
+DAR UNA VULETA AL PROGRAMA??
+
+QUITAR SINCRONIZACION FECHA:
+https://www.howto-connect.com/disable-and-enable-internet-time-in-windows-10/
+
+
+2.- Comprobar interfaces del host only, habra k crearlo si no existe.!!!!!!!
+3.- Como saber desde winEnt la IP del winServer y viceversa para los ps1.
+
+
+1.- Mirar https://dmcxblue.gitbook.io/red-team-notes/execution
+
+
+5.- Al crear una VM, se guarda en /hmoe/daniel/..., con otro PC se guardaria ahi(no existiria) o en la ruta por defecto??
+
+
+
+9.- Instalar las cosas(ssh, ftp, ...) de forma dinamica y no en win_base??
+
+
+Tutoria 2:
+
+10.- Programdata: (C:\ProgramData\Microsoft\Windows\Start Menu\Programs, C:\Users\Administrador\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp)
+    * Crear .bat k ejecute \\...\\powershell.exe archivo.ps1
+    1- EP mucho juego, startup folder, poner privs, y que pueda crear ficheros ahi, y descargar y ejecutar nc.exe(guardarlo en path user, no ahi)
+    2- Permisos de ver, miro lo k ejecuta, (poder concatenar el archivo k ejecuta para meter codigo) ¿backups?, 
+    3- Link a un script k ejecuta y ejecutar comandos(nc.exe)
+
+11.- En task:
+    poner rutas completas de todo
+    usar comando schtask 
+    https://docs.microsoft.com/es-es/windows-server/administration/windows-commands/schtasks-create 
+
+    co task se puede EP. De forma directa o si veo lo k ejecuta, e voy al otro fichero, etc,...(mirar con pslist, ps....)
+    Mirar con pslist el fichero, buscarlo con find, y lo de antes
+
+12.- MSI:
+    para instalar programas pero sin poder ejecutarli de forma privilegiada. Pero se puede usar msfvenom para generar msi, mertele un meterpreter o algo asi,
+    y cuando lo instalo (msiexec - lolbas)
+
+    Descargar arcivos con msi(nc.exe) en una ruta especifica porque hay un archivo que ejecuta los .exe de esa ruta. Hacer un task, un programa con while o en startup.
+    Obviamente el programa k los ekecute k sea con privs admin.
+
+
+
+14.- Desde vm, tener dos interfaces de red, a host y server. Hacer tunel con un vm en medio para haacer llegar la red del server al host, usar chisel. Y usar respinder en el tunel para pillar hashes del server
+
+15.- Mimikatz -> comandos -> log, privilege::debug, sekurlsa::logonpasswords(con eso ya se obtiene la pass). Tambien se pueden obtener tickets, etc.
+cmdkey.exe /add:username /user:username /pass:pass
+
+
+AD - https://book.hacktricks.xyz/windows-hardening/ntlm
+
+
+
+mirar vulnerabilidaddes de versiones antiguas, mas adelante
+
+active direcroty, usuarios sin ser admin k puedan cambair passwords,...
+
+
+
+Video contandobits:
+smbclient -> sysvol y netlogon, son solo carptead con info publica o algo asi.
+asrptoast -> usuarios con parametro DONT_REQ_PREAUTH
+kerberos para pillar tickets de users vulnerables y crakear
+ntlmrelay
+
+Herramientas AD:
+rubeus.exe
+GetUserSPNs.py -> GetADUsers.py -all danielpc/administrator:hola -dc-ip 192.168.56.156
+mimikatz
+
+
+
+
+
+PROBLEMA MAQUINAS:
+Cada día se acaba la fecha de prueba, aun estando en ova, creo k al actualizar la fecha tambien actualiza los dias restantes :( ¿Alguna forma de k no pase eso?
+
+
+
+2.- Comprobar interfaces del host only, habra k crearlo si no existe.
+
+7.- Crear user.txt y root.txt, cada script(IX, EPX) el suyo, por si hay movimientos laterales. Hay k simular inicio de sesion.
+
+9.- Interfaz genWIn:
+    - Comando: figlet (https://gist.github.com/LunaCodeGirl/6707775)
+    - Poner excepciones en system
+    - quitar sleep status, usar vboxmanage ip en un bucle de 5 segundos hasta k salga bien(tiepo maximo 3' o asi)
+    - Mostrar mensajes interfaz(Maquina instalando, maquina instalada, Configurando maquina...)
+    - Implementar sistema de errores
+
+
+13.- El cambio de pass del admin hacer en el script_final. ¿seria mejor?
+
+Mirar libro y paginas web
+
+Dar una vuelta al programa. Hacer mejor?? pensar codigo mejor??? Tener en cuenta vul AD
+
+
+19.- programaWinGen.sh, si elimino la carpeta content, como o donde ejecuto el script?????
+    os.system("rm -r content/config/script/ 2>/dev/null")
+    os.system("rm content/config/script.txt 2>/dev/null")
+

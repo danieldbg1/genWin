@@ -1,0 +1,15 @@
+Nmap...
+mirar cosas, nada
+
+Probamos por UDP y com es mas lento, hacemos los 1000 puertos mas comunes
+sudo nmap --top-ports 1000 -sU IP, pero como va muy lento ejecutamos lo siguiente:
+sudo nmap -sU --top-ports 1000 -T5 --max-retries max-tries IP
+o
+sudo nmap -sU --top-ports 1000 -T5 IP
+
+nos fijamos en el 161, el servicio snmp.
+sudo nmap -p161 -sU -sCV IP
+
+Vemos k nos saca mucha informacion y vemos una lista de usuarios. Lis guardamos en ua lista y hacemos hydra al ssh con esos usuarios y las contraseñas del archivo ./vulnerabilidades/passwords.txt
+
+Nos conectamos por Rdesktop en vez de por ssh para mayor comodidad

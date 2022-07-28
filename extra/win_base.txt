@@ -1,0 +1,33 @@
+Win Enterprise:
+
+Añadir Guest Guest Additions
+Desactivar firewall y antivirus.
+Instalar ssh
+Deshabilitar usuario daniel
+Desactivar updates(control + r, services.msc, windows update disable)
+Habilitar administrador y ponerle password
+Habilitar ejecucion scripts(en alguna maquina deshabilitar)
+Cambiar nombre pc, que no sea rjnm0...
+Desactivar apps que se ejecutan en el inicio de sesion.
+Borrar historial powershell
+Instalar ftp
+Instalar snmp
+Instalar modulo AD
+
+Win Server:
+Añadir Guest Guest Additions
+Desinstalar  el defender
+Desactivar firewall y antivirus
+Añadir idioma español par poder cambiar el teclado.
+Borrar historial powershell
+Cambiar politica de contraseñas
+
+
+
+Instalar como un  DC:
+    1.- Cambiar nombre PC. Panel de control -> sistema. Nombre: DC-Company
+    2.- Domain Controller: Administrar -> roles  y características -> servicios de Active Directory (Active Directory Domain Services):
+        - Nombre domain: genwin.local 
+        - Contraseña: Daniel123*
+
+        

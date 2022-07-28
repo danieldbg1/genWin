@@ -1,0 +1,39 @@
+vboxmanage export win10_base -o windows10.ova
+vboxmanage import windows10.ova
+Configurar RAM(1024), video(128)!!
+
+vboxmanage startvm windows10
+vboxmanage controlvm win10 poweroff
+
+Compartir carpetas:
+vboxmanage sharedfolder add windows1_daniel --name prueba_script --hostpath ./scriptWIN.ps1
+Ruta: Microsoft.Powershell.Core\FileSystem::\\VBOXSVR\script
+
+¿se puede mover al direcorio del admin y ejecutar? ¿se puede ejecutar ahi mismo?
+
+IP:
+vboxmanage hostonlyif remove vboxnet0
+vboxmanage hostonlyif create
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0
+
+vboxmanage natnetwork add --netname danielNAT --network "192.168.0.1/24" --enable 
+VBoxManage natnetwork start --netname danielNAT ?????????
+
+vboxmanage controlvm daniel nic1 hostonly vboxnet0
+vboxmanage controlvm daniel nic1 natnetwork daniel
+
+
+#vboxmanage guestproperty enumerate daniel | grep "IP" | tr " " "\n" | grep "192" | tr -d ","
+#Este comando es para cuando haya mas de una maquina windows, asi puedo saber la IP del DC y poner esa IP em el servidor DNS del windows entreprise.
+
+
+Tambien se puede cambiar la red con modyvm si la maquina esta apagada.
+
+vboxmanage guestcontrol win10 --username 'Administrator' --password 'hola' run -- 'C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe' 'ipconfig.exe' | grep '192.168' | awk '{print $NF}'
+
+vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -- "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\lalala.bat"
+
+
+Quitar sincronizacion de fecha:(hacer con la maquina encendida)
+VBoxManage setextradata "winEnterprise_base" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" 1
+

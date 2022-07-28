@@ -1,0 +1,3 @@
+Root.txt
+
+path/script.ps1 -Argument "IP -e cmd"

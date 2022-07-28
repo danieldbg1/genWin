@@ -1,0 +1,5 @@
+vboxmanage
+pwsh
+steghide
+
+exiftool?

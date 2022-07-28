@@ -1,0 +1,6 @@
+En vez de usar ese ps1, usar este github:
+https://github.com/ubeeri/Invoke-UserSimulator.git
+
+importar module(que se puede hacer en el original)
+
+y luego : start-process -NoNewWindows (invoke-usersimulator -StandAlone -Shares) y dejarlo en backgorund

