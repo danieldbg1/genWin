@@ -26,7 +26,7 @@ vboxmanage guestcontrol winServer --username "Administrator" --password "hola" r
 
 sed -i 's/$IP/IP_winServer/g' ./content/config/script/winEnt/winEnt1.ps1
 
-##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/winEnt -Destination "C:\Users\administrator\Desktop\script" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
+##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/winEnt -Destination "C:\Users\administrator\Desktop\script\" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
 
 vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\administrator\Desktop\script\winEnt1.ps1"
 
@@ -38,11 +38,4 @@ sleep 40
 
 vboxmanage guestcontrol winEnt --username "Administrator" --password "$$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"
 
-echo '#!/bin/bash' >> ./content/config/programaWinGen.sh
-echo 'while true' >> ./content/config/programaWinGen.sh
-echo 'do' >> ./content/config/programaWinGen.sh
-echo 'vboxmanage guestcontrol winServer --username "administrator" --password "$$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe" "C:\programa\programa.ps1" 2>/dev/null &' >> ./content/config/programaWinGen.sh
-echo 'sleep 10' >> ./content/config/programaWinGen.sh
-echo 'done' >> ./content/config/programaWinGen.sh
-chmod +x ./content/config/programaWinGen.sh
-sh ./content/config/programaWinGen.sh 2>/dev/null &
+##mensajeFinal:- Credenciales maquina winEnt -> $$username1 - $$password1

@@ -37,3 +37,5 @@ vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -
 Quitar sincronizacion de fecha:(hacer con la maquina encendida)
 VBoxManage setextradata "winEnterprise_base" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" 1
 
+Listar redes host only:
+vboxmanage list hostonlyifs | grep -i vboxnet0 | head -n 1

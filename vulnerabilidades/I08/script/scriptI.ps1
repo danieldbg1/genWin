@@ -6,7 +6,7 @@ mkdir C:\credenciales\
 echo '$username1:$password_rand2' > C:\credenciales\credenciales.txt
 
 $acl = Get-Acl C:\credenciales\credenciales.txt
-$AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("$username1123","Read","Allow")
+$AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule('$username1123',"Read","Allow")
 $acl.SetAccessRule($AccessRule)
 $acl | Set-Acl C:\credenciales\credenciales.txt
 

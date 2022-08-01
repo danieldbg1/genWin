@@ -27,7 +27,8 @@ def help():
     os.system("clear")
     os.system("figlet genWin.py")
     os.system("echo \n")
-
+    
+    print("\nInstalar los programas del archivo requisitos.txt\n")
     print("Se puede generar un entorno normal(1 solo PC windows) o AD(2 o mas PCs, un windows server y el resto windows 10\n")
     print("Se puede generar el entorno de forma aleatoria o manual. En el archivo extra/listaVulerabilidades.txt estan las vulneravilidades explicadas\n")
     print("Cuando se genera un entorno y este se apaga(apaga la/s maquina/s, no se podran encender otra vez correctamente. Para ello siga las siguientes pasos:")
@@ -36,8 +37,41 @@ def help():
     print("\n\t 3.- Las vulnerabilidad estan apuntadas en el archivo ./content/walkthrough.txt")
     print("\n\n\t\tIMPORTANTE!!! Mirar las vulnerabilidades en el ./content/walkthrough.txt antes de ejecutar el programa o se elminaran.")
     
-
     sys.exit(0)
+
+
+def random_vulEP():
+    limit = len(numbersEP)
+    num_rand = random.randint(0, limit)
+    return numbersEP[num_rand]
+    
+    
+
+def eliminar_entorno_anterior():
+    if os.path.isdir("./content/"):
+        os.system("rm -r ./content/ 2>/dev/null")
+
+    aux=subprocess.Popen("vboxmanage list vms | grep -w win10", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
+    result = aux.stdout.read().decode()
+    if "win10" in result:
+        os.system("vboxmanage unregistervm 'win10' --delete 2>/dev/null")
+    
+    aux=subprocess.Popen("vboxmanage list vms | grep -w winEnt", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
+    result = aux.stdout.read().decode()
+    if "winEnt" in result:
+        os.system("vboxmanage unregistervm 'winEnt' --delete 2>/dev/null")
+
+    aux=subprocess.Popen("vboxmanage list vms | grep -w winServer", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
+    result = aux.stdout.read().decode()
+    if "winServer" in result:
+        os.system("vboxmanage unregistervm 'winServer' --delete 2>/dev/null")
+
+def comprobar_red_host_only():
+    aux=subprocess.Popen("vboxmanage list hostonlyifs | grep -i vboxnet0 | head -n 1", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
+    result = aux.stdout.read().decode()
+    if "vboxnet0" not in result:
+        aux=subprocess.Popen("vboxmanage hostonlyif create", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        aux=subprocess.Popen("vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 ############ Funciones Entorno Normal ############
@@ -75,7 +109,7 @@ def prepararConf(vulI, vulEP):
     os.system("echo '\n\n' >> ./content/config/script/scriptWIN.ps1 2>/dev/null")
     sleep(0.03)
     os.system("cat ./content/config/script/scriptEP.ps1 >> ./content/config/script/scriptWIN.ps1 2>/dev/null")
-
+    
 
 def prepararVulerabilidades():
     file1 = open("./content/config/script/scriptWIN.ps1", "r")
@@ -121,7 +155,7 @@ def prepararVulerabilidades():
             status=true
 
         if '$password_rand'+str(i) in scriptWIN:
-            specialCharacters = "@#%=?*-_,.:+"
+            specialCharacters = "@#%=?*-_,.+"
             characters = string.ascii_letters + string.digits + specialCharacters
             password = ''.join(random.choice(characters) for i in range(8))
             scriptWIN = scriptWIN.replace('$password_rand'+str(i), password)
@@ -161,7 +195,7 @@ def configuracion_final():
     
 
 
-def crearMaquina(): 
+def crearEntorno(): 
     file = open("./content/config/script.txt", "r")
     aux = file.readline()
     count = 0
@@ -235,6 +269,7 @@ def actualizar_consola(vulI, vulEP):
     print("" + "El entorno windows ya esta creado. Las vulnerabilidades utilizadas son las siguientes: ")
     print("\n\t" + "- Intrusion: " + vulI)
     print("\n\t" + "- Escalada de privilegios: " + vulEP)
+    print("\n\t" + "- El entorno esta creado en la interfaz de red vboxnet0.")
     print("\n\nRecuerda que una vez apagada las maquinas, no podras encenderlas otra vez. Deberas crear el entorno de nuevo, eligiendo la vulnerabilidad mencionada, esta vulnerabilidad esta guardada en el archivo ./content/walkthrough.txt")
     print("\n Para mas informacion, ejecutar el programa e introducir el '3' para entrar en el panel de ayuda.")
     print("\n\nMucha suerte y good hack!!!")
@@ -310,175 +345,210 @@ def prepararVulerabilidades_AD():
     lista_passwords_random = []
     lista_scripts_winEnt_final = []    
     for contenido_script in lista_scripts_winEnt:
-        i = 1
-        status  = true
-        while status == true:
-            status=false
-            if '$username'+str(i) in contenido_script:
-                if i <= len(lista_usernames):
-                    username = lista_usernames[i-1]
-                    contenido_script = contenido_script.replace('$username'+str(i), username)
-                else:
+        while "$$username" in contenido_script:
+            existe = false
+            for aux in lista_usernames:
+                name = aux.split(":")[0]
+                username =  aux.split(":")[1]
+                if name in contenido_script:
+                    existe = true
+                    contenido_script = contenido_script.replace(name, username)
+            if existe == false:
+                user = random.randint(0, num_rand)
+                while user in lista_usernames:
                     user = random.randint(0, num_rand)
-                    while user in lista_usernames:
-                        user = random.randint(0, num_rand)
-                    with open('./diccionarios/names.txt', 'r') as userFile :
-                        content = userFile.readlines()
-                        username = content[user].strip()
-                    contenido_script = contenido_script.replace('$username'+str(i), username)
-                    lista_usernames.append(username)
-                if '$username'+str(i) in script:
+                with open('./diccionarios/names.txt', 'r') as userFile :
+                    content = userFile.readlines()
+                    username = content[user].strip()
+                index = 0
+                while '$$username'+str(index) not in contenido_script:
+                    index+=1
+                contenido_script = contenido_script.replace('$$username'+str(index), username)
+                lista_usernames.append('$$username'+str(index) + ":" + username)
+                if '$$username'+str(index) in script:
                     file = open("./content/config/script/script.txt", "r")
                     file.closed
                     linea_aux = file.readline()
                     contenido_aux = ""
                     while linea_aux:
-                        if '$username'+str(i) in linea_aux and "winEnt" in linea_aux:
-                            linea_aux = linea_aux.replace('$username'+str(i), username)
+                        if '$$username'+str(index) in linea_aux:
+                            linea_aux = linea_aux.replace('$$username'+str(index), username)
                         contenido_aux += linea_aux
                         linea_aux = file.readline()    
                     with open("./content/config/script/script.txt", "w") as file:
                         file.write(contenido_aux)
-                status=true
-            if '$password'+str(i) in contenido_script:
-                if i <= len(lista_passwords):
-                    password = lista_passwords[i-1]
-                    contenido_script = contenido_script.replace('$password'+str(i), password)
-                else:
-                    password = random.randint(0, num_rand)
-                    while password in lista_passwords:
-                        password = random.randint(0, num_rand)
-                    with open('./diccionarios/passwords.txt', 'r') as passFile :
-                        content = passFile.readlines()
-                        password = content[password].strip()
-                    contenido_script = contenido_script.replace('$password'+str(i), password)
-                    lista_passwords.append(password)
-                if '$password'+str(i) in script:
-                    file = open("./content/config/script/script.txt", "r")
-                    file.closed
-                    linea_aux = file.readline()
-                    contenido_aux = ""
-                    while linea_aux:
-                        if '$password'+str(i) in linea_aux and "winEnt" in linea_aux:
-                            linea_aux = linea_aux.replace('$password'+str(i), password)
-                        contenido_aux += linea_aux
-                        linea_aux = file.readline()    
-                    with open("./content/config/script/script.txt", "w") as file:
-                        file.write(contenido_aux)
-                status=true
-            if '$password_rand'+str(i) in contenido_script:
-                if i <= len(lista_passwords_random):
-                    password = lista_passwords_random[i-1]
-                    contenido_script = contenido_script.replace('$password_rand'+str(i), password)
-                else:
-                    specialCharacters = "@#%=?*-_,.:+"
+        
+        while "$$password" in contenido_script:
+            existe = false
+            if "$$password_rand" in contenido_script:
+                for aux in lista_passwords_random:
+                    name = aux.split(":")[0]
+                    password_rand = aux.split(":")[1]
+                    index = 1
+                    if name in contenido_script:
+                        existe = true
+                        contenido_script = contenido_script.replace(name, password_rand)
+                if existe == false:
+                    specialCharacters = "@#%=?*-_,.+"
                     characters = string.ascii_letters + string.digits + specialCharacters
-                    password = ''.join(random.choice(characters) for i in range(8))
-                    contenido_script = contenido_script.replace('$password_rand'+str(i), password)
-                    lista_passwords_random.append(password)
-                if '$password_rand'+str(i) in script:
-                    file = open("./content/config/script/script.txt", "r")
-                    file.closed
-                    linea_aux = file.readline()
-                    contenido_aux = ""
-                    while linea_aux:
-                        if '$password_rand'+str(i) in linea_aux and "winEnt" in linea_aux:
-                            linea_aux = linea_aux.replace('$password_rand'+str(i), password)
-                        contenido_aux += linea_aux
-                        linea_aux = file.readline()    
-                    with open("./content/config/script/script.txt", "w") as file:
-                        file.write(contenido_aux)
-                status=true      
-            
-            i+=1
+                    password_rand = ''.join(random.choice(characters) for i in range(8))
+                    index = 0
+                    while '$$password_rand'+str(index) not in contenido_script:
+                        index+=1
+                    contenido_script = contenido_script.replace('$$password_rand'+str(index), password_rand)
+                    lista_passwords_random.append('$$password_rand'+str(index) + ":" + password_rand)
+                    if '$$password_rand'+str(index) in script:
+                        file = open("./content/config/script/script.txt", "r")
+                        file.closed
+                        linea_aux = file.readline()
+                        contenido_aux = ""
+                        while linea_aux:
+                            if '$$password_rand'+str(index) in linea_aux:
+                                linea_aux = linea_aux.replace('$$password_rand'+str(index), password_rand)
+                            contenido_aux += linea_aux
+                            linea_aux = file.readline()    
+                        with open("./content/config/script/script.txt", "w") as file:
+                            file.write(contenido_aux)
+            existe = false
+            for aux in lista_passwords:
+                name = aux.split(":")[0]
+                password = aux.split(":")[1]
+                if name in contenido_script:
+                    existe = true
+                    contenido_script = contenido_script.replace(name, password)
+            if existe == false:
+                user = random.randint(0, num_rand)
+                while user in lista_passwords:
+                    user = random.randint(0, num_rand)
+                with open('./diccionarios/passwords.txt', 'r') as passFile :
+                    content = passFile.readlines()
+                    password = content[user].strip()
+                index = 0
+                if "$$password_rand" not in contenido_script and "$$password" in contenido_script:
+                    while "$$password"+str(index) not in contenido_script:
+                        index+=1
+                    contenido_script = contenido_script.replace('$$password'+str(index), password)
+                    
+                    lista_passwords.append('$$password'+str(index) + ":" + password)
+                    if "$$password"+str(index) in script:
+                        file = open("./content/config/script/script.txt", "r")
+                        file.closed
+                        linea_aux = file.readline()
+                        contenido_aux = ""
+                        while linea_aux:
+                            if '$$password'+str(index) in linea_aux:
+                                linea_aux = linea_aux.replace('$$password'+str(index), password)
+                            contenido_aux += linea_aux
+                            linea_aux = file.readline()    
+                        with open("./content/config/script/script.txt", "w") as file:
+                            file.write(contenido_aux)
+                        
         lista_scripts_winEnt_final.append(contenido_script)
     
     lista_scripts_winServer_final = []
+    
     for contenido_script in lista_scripts_winServer:
-        i = 1
-        status  = true
-        while status == true:
-            status=false
-            #Comprobar si ya hay usuario
-            if '$username'+str(i) in contenido_script:
-                if i <= len(lista_usernames):
-                    username = lista_usernames[i-1]
-                    contenido_script = contenido_script.replace('$username'+str(i), username)
-                else:
+        while "$$username" in contenido_script:
+            existe = false
+            for aux in lista_usernames:
+                name = aux.split(":")[0]
+                username =  aux.split(":")[1]
+                if name in contenido_script:
+                    existe = true
+                    contenido_script = contenido_script.replace(name, username)
+            if existe == false:
+                user = random.randint(0, num_rand)
+                while user in lista_usernames:
                     user = random.randint(0, num_rand)
-                    while user in lista_usernames:
-                        user = random.randint(0, num_rand)
-                    with open('./diccionarios/names.txt', 'r') as userFile :
-                        content = userFile.readlines()
-                        username = content[user].strip()
-                    contenido_script = contenido_script.replace('$username'+str(i), username)
-                    lista_usernames.append(username)
-                if '$username'+str(i) in script:
+                with open('./diccionarios/names.txt', 'r') as userFile :
+                    content = userFile.readlines()
+                    username = content[user].strip()
+                index = 0
+                while '$$username'+str(index) not in contenido_script:
+                    index+=1
+                contenido_script = contenido_script.replace('$$username'+str(index), username)
+                lista_usernames.append('$$username'+str(index) + ":" + username)
+                if '$$username'+str(index) in script:
                     file = open("./content/config/script/script.txt", "r")
                     file.closed
                     linea_aux = file.readline()
                     contenido_aux = ""
                     while linea_aux:
-                        if '$username'+str(i) in linea_aux and "winServer" in linea_aux:
-                            linea_aux = linea_aux.replace('$username'+str(i), username)
+                        if '$$username'+str(index) in linea_aux:
+                            linea_aux = linea_aux.replace('$$username'+str(index), username)
                         contenido_aux += linea_aux
                         linea_aux = file.readline()    
                     with open("./content/config/script/script.txt", "w") as file:
                         file.write(contenido_aux)
-                status=true
-            if '$password'+str(i) in contenido_script:
-                if i <= len(lista_passwords):
-                    password = lista_passwords[i-1]
-                    contenido_script = contenido_script.replace('$password'+str(i), password)
-                else:
-                    password = random.randint(0, num_rand)
-                    while password in lista_passwords:
-                        password = random.randint(0, num_rand)
-                    with open('./diccionarios/passwords.txt', 'r') as passFile :
-                        content = passFile.readlines()
-                        password = content[password].strip()
-                    contenido_script = contenido_script.replace('$password'+str(i), password)
-                    lista_passwords.append(password)
-                if '$password'+str(i) in script:
-                    file = open("./content/config/script/script.txt", "r")
-                    file.closed
-                    linea_aux = file.readline()
-                    contenido_aux = ""
-                    while linea_aux:
-                        if '$password'+str(i) in linea_aux and "winServer" in linea_aux:
-                            linea_aux = linea_aux.replace('$password'+str(i), password)
-                        contenido_aux += linea_aux
-                        linea_aux = file.readline()    
-                    with open("./content/config/script/script.txt", "w") as file:
-                        file.write(contenido_aux)
-                status=true
-            if '$password_rand'+str(i) in contenido_script:
-                if i <= len(lista_passwords_random):
-                    password = lista_passwords_random[i-1]
-                    contenido_script = contenido_script.replace('$password_rand'+str(i), password)
-                else:
-                    specialCharacters = "@#%=?*-_,.:+"
+        
+        while "$$password" in contenido_script:
+            existe = false
+            if "$$password_rand" in contenido_script:
+                for aux in lista_passwords_random:
+                    name = aux.split(":")[0]
+                    password_rand = aux.split(":")[1]
+                    index = 1
+                    if name in contenido_script:
+                        existe = true
+                        contenido_script = contenido_script.replace(name, password_rand)
+                if existe == false:
+                    specialCharacters = "@#%=?*-_,.+"
                     characters = string.ascii_letters + string.digits + specialCharacters
-                    password = ''.join(random.choice(characters) for i in range(8))
-                    contenido_script = contenido_script.replace('$password_rand'+str(i), password)
-                    lista_passwords_random.append(password)
-                if '$password_rand'+str(i) in script:
+                    password_rand = ''.join(random.choice(characters) for i in range(8))
+                    index = 0
+                    while '$$password_rand'+str(index) not in contenido_script:
+                        index+=1
+                    contenido_script = contenido_script.replace('$$password_rand'+str(index), password_rand)
+                    lista_passwords_random.append('$$password_rand'+str(index) + ":" + password_rand)
+                    if '$$password_rand'+str(index) in script:
+                        file = open("./content/config/script/script.txt", "r")
+                        file.closed
+                        linea_aux = file.readline()
+                        contenido_aux = ""
+                        while linea_aux:
+                            if '$$password_rand'+str(index) in linea_aux:
+                                linea_aux = linea_aux.replace('$$password_rand'+str(index), password_rand)
+                            contenido_aux += linea_aux
+                            linea_aux = file.readline()    
+                        with open("./content/config/script/script.txt", "w") as file:
+                            file.write(contenido_aux)
+            existe = false
+            for aux in lista_passwords:
+                name = aux.split(":")[0]
+                password = aux.split(":")[1]
+                if name in contenido_script:
+                    existe = true
+                    contenido_script = contenido_script.replace(name, password)
+            if existe == false:
+                user = random.randint(0, num_rand)
+                while user in lista_passwords:
+                    user = random.randint(0, num_rand)
+                with open('./diccionarios/passwords.txt', 'r') as passFile :
+                    content = passFile.readlines()
+                    password = content[user].strip()
+                index = 0
+                if "$$password" in contenido_script:
+                    while "$$password"+str(index) not in contenido_script:
+                        index+=1
+                contenido_script = contenido_script.replace('$$password'+str(index), password)
+                lista_passwords.append('$password'+str(index) + ":" + password)
+                if "$$password"+str(index) in script:
                     file = open("./content/config/script/script.txt", "r")
                     file.closed
                     linea_aux = file.readline()
                     contenido_aux = ""
                     while linea_aux:
-                        if '$password_rand'+str(i) in linea_aux and "winServer" in linea_aux:
-                            linea_aux = linea_aux.replace('$password_rand'+str(i), password)
+                        if '$$password'+str(index) in linea_aux:
+                            linea_aux = linea_aux.replace('$$password'+str(index), password)
                         contenido_aux += linea_aux
                         linea_aux = file.readline()    
                     with open("./content/config/script/script.txt", "w") as file:
                         file.write(contenido_aux)
-                status=true      
             
-            
-            i+=1
+                       
         lista_scripts_winServer_final.append(contenido_script)
+    
+    
 
     i = 1
     for contenido_script in lista_scripts_winEnt_final:
@@ -494,6 +564,72 @@ def prepararVulerabilidades_AD():
             file.write("\n")
         i+=1
 
+    
+def nueva_vul():
+    ##Abrir todos los archivos, guardar en lista e iterar
+    lista_scripts_winEnt = [] 
+    lista_scripts_winEnt_final = []
+    lista_scripts_winServer = []
+    i = 1
+    while os.path.isfile("./content/config/script/winEnt/winEnt" + str(i) + ".ps1"):
+        file = open("./content/config/script/winEnt/winEnt" + str(i) + ".ps1", "r")
+        script = file.read()
+        file.closed
+        lista_scripts_winEnt.append(script)
+        i+=1
+
+    
+    for script in lista_scripts_winEnt:
+        if "##vulI" in script:
+            print("VulI")
+        elif "##vulEP" in script:
+            vulEP_random = random_vulEP()
+            vulEP_random = 5 
+            #vulEP_random = 9 # para ver si funciona!!! y el 10, k es igual a este
+            os.system("cp ./vulnerabilidades/EP0"+str(vulEP_random)+"/script/* ./content/config/script/winEnt 2>/dev/null")
+            
+            file1 = open("./vulnerabilidades/EP0"+str(vulEP_random)+"/walkthrough.txt", 'r')
+            walkthrough_EP = "VulEP - EP" + str(vulEP_random) + "\n" + file1.read()
+            file1.closed
+            file2 = open("./content/walkthrough.txt", 'r')
+            contenido = file2.read()
+            file2.closed
+            contenido = contenido.replace('##vulEP', walkthrough_EP)
+            with open("./content/walkthrough.txt", 'w') as file:
+                file.write("\n")
+                file.write(contenido)
+                file.write("\n")
+
+            file1 = open("./content/config/script/winEnt/scriptEP.ps1", 'r')
+            scriptEP = file1.read()
+            file1.closed
+            script = script.replace('##vulEP', scriptEP) 
+        
+        lista_scripts_winEnt_final.append(script)
+
+    i = 1
+    for contenido_script in lista_scripts_winEnt_final:
+        with open("./content/config/script/winEnt/winEnt" + str(i) + ".ps1", 'w') as file:
+            file.write(contenido_script)
+            file.write("\n")
+        i+=1
+
+            
+        
+            
+    '''
+    i = 1
+    while os.path.isfile("./content/config/script/winServer/winServer" + str(i) + ".ps1"):
+        file = open("./content/config/script/winServer/winServer" + str(i) + ".ps1", "r")
+        script = file.read()
+        file.closed
+        lista_scripts_winServer.append(script)
+        i+=1
+    '''
+    ##haacer para ficheros server
+
+
+
 
 def configuracion_final_AD(vulAD):
     #Mirar primero si existe el archivo
@@ -504,7 +640,7 @@ def configuracion_final_AD(vulAD):
         os.system("cp ./vulnerabilidades/"+vulAD+"/script/winEnt/script_final.ps1 ./content/config/script/winEnt/script_final.ps1 2>/dev/null")
 
 
-def crearMaquina_AD():
+def crearEntorno_AD():
     file = open("./content/config/script/script.txt", "r")
     aux = file.readline()
     count = 0
@@ -530,6 +666,11 @@ def crearMaquina_AD():
             aux_mensaje = linea.split("##mensaje:")
             print("\t" + aux_mensaje[1])
             print("\n")
+
+        if "##mensajeFinal:" in linea:
+            global mensajeFinal 
+            aux_mensaje = linea.split("##mensajeFinal:")
+            mensajeFinal = aux_mensaje[1]
 
         if "IP_winServer" in linea:
             linea = linea.replace('IP_winServer', ipWinServer)
@@ -589,31 +730,33 @@ def actualizar_consola_AD(vulAD):
 
     print("" + "El entorno windows ya esta creado. Las vulnerabilidades utilizadas son las siguientes: ")
     print("\n\t" + "- Vulnerabilidad: " + vulAD)
+    if mensajeFinal != "":
+        print("\t" + mensajeFinal)
+    print("\n\t" + "- El entorno esta creado en la interfaz de red vboxnet0.")
     print("\n\nRecuerda que una vez apagada las maquinas, no podras encenderlas otra vez. Deberas crear el entorno de nuevo, eligiendo la vulnerabilidad mencionada, esta vulnerabilidad esta guardada en el archivo ./content/walkthrough.txt")
-    print("\n Para mas informacion, ejecutar el programa e introducir el '3' para entrar en el panel de ayuda.")
+    print("\nPara mas informacion, ejecutar el programa e introducir el '3' para entrar en el panel de ayuda.")
     print("\n\nMucha suerte y good hack!!!")
     
 
 
 
 def pruebas():
-    lista = []
-    lista.append(1)
-    lista.append(2)
-    i = 1
-    print("indice: " + str(len(lista)) + "\n")
-    if i <= len(lista):
-        print("okey")
-    else:
-        print("Error")
-
+    file1 = open("./vulnerabilidades/EP01/walkthrough.txt", 'r')
+    walkthrough_EP = "holaaaaa\n" + file1.read()
+    file1.closed
+    print(walkthrough_EP)
+ 
 
 #def main():
 #    print("Hello World!")
 
+mensajeFinal = ""
+numbersAD = ['01', '02', '03', '04', '05']
+numbersI = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
+numbersEP = ['01', '02', '03', '04', '05', '06', '07', '08']
+
 if __name__ == "__main__":
     #main()
-    
     print("1.- Generar entorno de forma manual (1)")
     print("2.- Generar entorno de forma aleatoria (2)")
     print("3.- Help (3)")
@@ -639,8 +782,6 @@ if __name__ == "__main__":
                     auxvulEP = vulEP.split("EP")
                     auxVulI = auxVulI[1]
                     auxvulEP = auxvulEP[1]
-                    numbersI = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14',' 15', '16', '17']
-                    numbersEP= ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14',' 15', '16', '17']
                     if auxVulI not in numbersI or auxvulEP not in numbersEP:
                         print("Vulve a introducir las vulnerabilidades con el formato correcto(Ejemplo: I01 o EP10)")
                         status = false
@@ -655,7 +796,6 @@ if __name__ == "__main__":
                 else:
                     auxVulAD = vulAD.split("AD")
                     auxVulAD = auxVulAD[1]
-                    numbersAD= ['01', '02', '03', '04', '05']
                     if auxVulAD not in numbersAD:
                         print("Vulve a introducir las vulnerabilidades con el formato correcto(Ejemplo: AD01)")
                         status = false
@@ -665,6 +805,13 @@ if __name__ == "__main__":
 
     
     elif conf == "2":
+        '''
+        elegir de forma aleatoria entorno normal o AD
+        y hacer una funcion para elegir de forma aleatoria las difenretes vuls
+        random_vulI(vulI)
+        random_vulEP(vulEP)
+        random_vulAD(vulAd)
+        '''
         print("En proceso...")
         sys.exit(0)
     elif conf=="3":
@@ -674,19 +821,24 @@ if __name__ == "__main__":
         sys.exit(0)
     
     if tipoEntorno == "1":
+        eliminar_entorno_anterior()
+        comprobar_red_host_only()
         prepararConf(vulI, vulEP)
         prepararVulerabilidades()
         configuracion_final()
         #pruebas()
-        crearMaquina()
+        crearEntorno()
         actualizar_consola(vulI, vulEP)
         #borrarConf()
     else:
+        eliminar_entorno_anterior()
+        comprobar_red_host_only()
         prepararConf_AD(vulAD)
+        #nueva_vul()
         prepararVulerabilidades_AD()
         configuracion_final_AD(vulAD)
         #pruebas()
-        crearMaquina_AD()
+        crearEntorno_AD()
         actualizar_consola_AD(vulAD)
         #borrarConf_AD()
     

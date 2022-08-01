@@ -13,3 +13,5 @@ sudo nmap -p161 -sU -sCV IP
 Vemos k nos saca mucha informacion y vemos una lista de usuarios. Lis guardamos en ua lista y hacemos hydra al ssh con esos usuarios y las contraseñas del archivo ./vulnerabilidades/passwords.txt
 
 Nos conectamos por Rdesktop en vez de por ssh para mayor comodidad
+
+En el directorio C:\credenciales, tenemos las credenciales de otro usuario, nos conectamos como ese usuario para ver si podemos hacer la escalada de privilegios.

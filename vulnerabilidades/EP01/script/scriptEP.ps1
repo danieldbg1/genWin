@@ -4,7 +4,7 @@ param(
     [String]$ArgumentList
 )
 
-$pass = ConvertTo-SecureString "$password_rand1" -AsPlainText -Force
+$pass = ConvertTo-SecureString "$$password_rand1" -AsPlainText -Force
 $farmCredential = New-Object System.Management.Automation.PsCredential("administrator", $pass)
 Start-Process powershell.exe "C:\Users\Administrator\Desktop\nc.exe $ArgumentList" -Credential $farmCredential -Wait -WindowStyle Hidden
 ' > C:\Users\Administrator\Desktop\script.ps1
@@ -14,7 +14,7 @@ mv C:\Users\Administrator\Desktop\script\nc.exe C:\Users\Administrator\Desktop\n
 
 net localgroup 'nc' /comment:"Ejecutar nc.exe como administrator: C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'" /add
 
-net localgroup 'nc' $username1 /add 
+net localgroup 'nc' $$username1 /add 
 
 $acl = Get-Acl C:\Users\Administrator\Desktop\script.exe
 $AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("nc","ReadAndExecute","Allow")

