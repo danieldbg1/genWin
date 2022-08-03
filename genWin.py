@@ -38,13 +38,6 @@ def help():
     print("\n\n\t\tIMPORTANTE!!! Mirar las vulnerabilidades en el ./content/walkthrough.txt antes de ejecutar el programa o se elminaran.")
     
     sys.exit(0)
-
-
-def random_vulEP():
-    limit = len(numbersEP)
-    num_rand = random.randint(0, limit)
-    return numbersEP[num_rand]
-    
     
 
 def eliminar_entorno_anterior():
@@ -97,7 +90,6 @@ def prepararConf(vulI, vulEP):
     sleep(0.03)
     os.system("echo '\n\n' >> ./content/walkthrough.txt 2>/dev/null")
     sleep(0.03)
-    #os.system("cp ./vulnerabilidades/"+vulI+"/script.txt ./content/config/script.txt 2>/dev/null")
     os.system("cp ./vulnerabilidades/script/script_win_enterprise.txt ./content/config/script.txt 2>/dev/null")
     sleep(0.03)
     os.system("cp ./vulnerabilidades/"+vulI+"/script/* ./content/config/script/ 2>/dev/null")
@@ -255,8 +247,6 @@ def crearEntorno():
                             print("\nComando fallido: " + linea + "\n")
                             sys.exit(-1)
         
-        #os.system(linea.strip())
-        
         linea = script_vm.readline()
         
 
@@ -285,7 +275,6 @@ def borrarConf():
 
 ############ Funciones AD ############
 def prepararConf_AD(vulAD):
-    #Si uso alguna vul extra?? IX y/o EPX?? como lo pongo en los walkthrough, scripts, etc????????
     os.system("mkdir ./content/ 2>/dev/null")
     sleep(0.03)
     os.system("mkdir ./content/config 2>/dev/null")
@@ -315,7 +304,6 @@ def prepararConf_AD(vulAD):
     
 
 def prepararVulerabilidades_AD():
-    ##Abrir todos los archivos, guardar en lista e iterar
     lista_scripts_winEnt = [] 
     lista_scripts_winServer = []
     i = 1
@@ -338,7 +326,6 @@ def prepararVulerabilidades_AD():
     script = file2.read()
     file2.closed
 
-    #Se puede quitar uno de los 2 whiles y hacerlo todo en uno
     num_rand = 19
     lista_usernames = [] 
     lista_passwords = []
@@ -565,74 +552,10 @@ def prepararVulerabilidades_AD():
         i+=1
 
     
-def nueva_vul():
-    ##Abrir todos los archivos, guardar en lista e iterar
-    lista_scripts_winEnt = [] 
-    lista_scripts_winEnt_final = []
-    lista_scripts_winServer = []
-    i = 1
-    while os.path.isfile("./content/config/script/winEnt/winEnt" + str(i) + ".ps1"):
-        file = open("./content/config/script/winEnt/winEnt" + str(i) + ".ps1", "r")
-        script = file.read()
-        file.closed
-        lista_scripts_winEnt.append(script)
-        i+=1
-
-    
-    for script in lista_scripts_winEnt:
-        if "##vulI" in script:
-            print("VulI")
-        elif "##vulEP" in script:
-            vulEP_random = random_vulEP()
-            vulEP_random = 5 
-            #vulEP_random = 9 # para ver si funciona!!! y el 10, k es igual a este
-            os.system("cp ./vulnerabilidades/EP0"+str(vulEP_random)+"/script/* ./content/config/script/winEnt 2>/dev/null")
-            
-            file1 = open("./vulnerabilidades/EP0"+str(vulEP_random)+"/walkthrough.txt", 'r')
-            walkthrough_EP = "VulEP - EP" + str(vulEP_random) + "\n" + file1.read()
-            file1.closed
-            file2 = open("./content/walkthrough.txt", 'r')
-            contenido = file2.read()
-            file2.closed
-            contenido = contenido.replace('##vulEP', walkthrough_EP)
-            with open("./content/walkthrough.txt", 'w') as file:
-                file.write("\n")
-                file.write(contenido)
-                file.write("\n")
-
-            file1 = open("./content/config/script/winEnt/scriptEP.ps1", 'r')
-            scriptEP = file1.read()
-            file1.closed
-            script = script.replace('##vulEP', scriptEP) 
-        
-        lista_scripts_winEnt_final.append(script)
-
-    i = 1
-    for contenido_script in lista_scripts_winEnt_final:
-        with open("./content/config/script/winEnt/winEnt" + str(i) + ".ps1", 'w') as file:
-            file.write(contenido_script)
-            file.write("\n")
-        i+=1
-
-            
-        
-            
-    '''
-    i = 1
-    while os.path.isfile("./content/config/script/winServer/winServer" + str(i) + ".ps1"):
-        file = open("./content/config/script/winServer/winServer" + str(i) + ".ps1", "r")
-        script = file.read()
-        file.closed
-        lista_scripts_winServer.append(script)
-        i+=1
-    '''
-    ##haacer para ficheros server
-
 
 
 
 def configuracion_final_AD(vulAD):
-    #Mirar primero si existe el archivo
     if os.path.exists("./vulnerabilidades/"+vulAD+"/script/winServer/script_final.ps1"):
         os.system("cp ./vulnerabilidades/"+vulAD+"/script/winServer/script_final.ps1 ./content/config/script/winServer/script_final.ps1 2>/dev/null")
 
@@ -739,12 +662,6 @@ def actualizar_consola_AD(vulAD):
     
 
 
-
-def pruebas():
-    file1 = open("./vulnerabilidades/EP01/walkthrough.txt", 'r')
-    walkthrough_EP = "holaaaaa\n" + file1.read()
-    file1.closed
-    print(walkthrough_EP)
  
 
 #def main():
@@ -753,7 +670,7 @@ def pruebas():
 mensajeFinal = ""
 numbersAD = ['01', '02', '03', '04', '05']
 numbersI = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
-numbersEP = ['01', '02', '03', '04', '05', '06', '07', '08']
+numbersEP = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
 
 if __name__ == "__main__":
     #main()
@@ -826,7 +743,6 @@ if __name__ == "__main__":
         prepararConf(vulI, vulEP)
         prepararVulerabilidades()
         configuracion_final()
-        #pruebas()
         crearEntorno()
         actualizar_consola(vulI, vulEP)
         #borrarConf()
@@ -834,10 +750,8 @@ if __name__ == "__main__":
         eliminar_entorno_anterior()
         comprobar_red_host_only()
         prepararConf_AD(vulAD)
-        #nueva_vul()
         prepararVulerabilidades_AD()
         configuracion_final_AD(vulAD)
-        #pruebas()
         crearEntorno_AD()
         actualizar_consola_AD(vulAD)
         #borrarConf_AD()

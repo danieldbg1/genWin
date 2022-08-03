@@ -1,4 +1,3 @@
-
 #Activar ssh y desactivar conexiones con contraseña
 Start-service sshd
 (Get-Content -Path C:\ProgramData\ssh\sshd_config -Raw) -replace '#PasswordAuthentication yes', 'PasswordAuthentication no' | Set-Content -Path C:\ProgramData\ssh\sshd_config
@@ -18,14 +17,6 @@ Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStat
 
 #Conectar con usuario que no sea admin:
 net localgroup "Remote Desktop Users" $username1 /add
-
-#Winrm
-#net localgroup "Remote Management Users" $username2 /add
-
-#Simmular conexion username2 para que se cree su directorio: C:\Users\username2
-#$pass = ConvertTo-SecureString '$password1' -AsPlainText -Force
-#$farmCredential = New-Object System.Management.Automation.PsCredential('$username2', $pass)
-#Start-Process -FilePath 'powershell.exe' -Credential $farmCredential -ArgumentList ('C:\windows\system32\ipconfig.exe') -WorkingDirectory 'C:\Windows\System32'
 
 
 #FTP:
@@ -57,7 +48,7 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 
 ##configuracion_script:echo 'New-WebFtpSite -Name "ftp_usuario" -Port '2121' -PhysicalPath "C:\\Users\\$username2\\" -IPAddress $IP -Force' >> ./content/config/script/scriptWIN2.ps1
 ##configuracion_script:echo 'Set-ItemProperty "IIS:\\Sites\\ftp_usuario" -Name ftpServer.security.ssl.dataChannelPolicy -Value 0' >> ./content/config/script/scriptWIN2.ps1
-##configuracion_script: echo 'Set-ItemProperty "IIS:\Sites\\ftp_usuario" -Name ftpServer.security.ssl.controlChannelPolicy -Value 0' >> ./content/config/script/scriptWIN2.ps1
+##configuracion_script:echo 'Set-ItemProperty "IIS:\Sites\\ftp_usuario" -Name ftpServer.security.ssl.controlChannelPolicy -Value 0' >> ./content/config/script/scriptWIN2.ps1
 ##configuracion_script:echo 'Set-ItemProperty "IIS:\\Sites\\ftp_usuario" -Name ftpServer.security.authentication.basicAuthentication.enabled -Value $true' >> ./content/config/script/scriptWIN2.ps1
 ##configuracion_script:echo 'Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessType="Allow";roles="";permissions="Read,Write";users="*"} -PSPath IIS:\ -location "ftp_usuario"' >> ./content/config/script/scriptWIN2.ps1
 

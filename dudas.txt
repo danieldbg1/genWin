@@ -1,7 +1,0 @@
-Tasks no funcionan, Se keda en cola (queued)
-
-Como asginar privs?? como SeBackupPrivilege?? User Rights Assignment??
-
-Alguna forma de k no bajen los dias de prueba??
-
-Como activar UAC conexiones remotas?

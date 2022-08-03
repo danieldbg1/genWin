@@ -1,17 +1,22 @@
-Nmap...
-mirar cosas, nada
+User.txt
 
-Probamos por UDP y com es mas lento, hacemos los 1000 puertos mas comunes
-sudo nmap --top-ports 1000 -sU IP, pero como va muy lento ejecutamos lo siguiente:
-sudo nmap -sU --top-ports 1000 -T5 --max-retries max-tries IP
-o
-sudo nmap -sU --top-ports 1000 -T5 IP
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
 
-nos fijamos en el 161, el servicio snmp.
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+
+Pero no hay nada interesante, probamos hacer nmap por UDP:
+    - sudo nmap -sU --top-ports 1000 -T5 IP
+
+
+Nos fijamos en el 161, el servicio snmp.
 sudo nmap -p161 -sU -sCV IP
 
 Vemos k nos saca mucha informacion y vemos una lista de usuarios. Lis guardamos en ua lista y hacemos hydra al ssh con esos usuarios y las contraseñas del archivo ./vulnerabilidades/passwords.txt
 
-Nos conectamos por Rdesktop en vez de por ssh para mayor comodidad
+Nos conectamos por rdesktop en vez de por ssh para mayor comodidad
 
-En el directorio C:\credenciales, tenemos las credenciales de otro usuario, nos conectamos como ese usuario para ver si podemos hacer la escalada de privilegios.
+Buscando un poco por el PC, encontramos un directorio interesante, C:\credenciales, tenemos las credenciales de otro usuario, nos conectamos como ese usuario para ver si podemos hacer la escalada de privilegios.

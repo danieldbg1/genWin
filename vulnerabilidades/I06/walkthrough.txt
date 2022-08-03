@@ -1,5 +1,17 @@
 User.txt
 
-nmap ...
-ftp IP y entrar como anonymous sin pass
-Obtener creds de otro usuario y entrar por rdesktop
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
+
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+En el nmap -sCV ... vemos que en el servicio ftp nos podemos conectar como anonymous:
+    - ftp IP
+    - dir o ls 
+    - get file.txt para descargar el fichero.
+    - quit 
+y dentro tenemos la credencial de un usuario. Nos conectamos con rdesktop.
+

