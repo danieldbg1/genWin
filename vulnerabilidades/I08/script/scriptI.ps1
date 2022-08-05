@@ -1,6 +1,6 @@
 #Crear usuario
-net user '$username1123' '$password1' /add
 net user '$username1' '$password_rand2' /add
+net user '$username1123' '$password1' /add
 
 mkdir C:\credenciales\
 echo '$username1:$password_rand2' > C:\credenciales\credenciales.txt

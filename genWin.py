@@ -8,6 +8,7 @@ import subprocess
 import sys
 from telnetlib import IP
 from time import sleep
+from traceback import print_tb
 from unittest import result
 from click import command
 from django import conf
@@ -100,6 +101,27 @@ def prepararConf(vulI, vulEP):
     sleep(0.03)
     os.system("echo '\n\n' >> ./content/config/script/scriptWIN.ps1 2>/dev/null")
     sleep(0.03)
+
+    #Mirar que la constraseña del username1 sea la misma en scriptI.ps1 y scriptEP.ps1
+    file1 = open("./content/config/script/scriptI.ps1", "r")
+    file1.closed
+    lineaI = file1.readline()
+    while lineaI:
+        if "net user" in lineaI and "$username1" in lineaI:
+            file2 = open("./content/config/script/scriptEP.ps1", "r")
+            scriptEP = file2.read()
+            file2.closed
+            #username1 siempre tiene $password1 o $password_rand2
+            if "$password1" in lineaI:
+                scriptEP = scriptEP.replace('$password_username1', "$password1")
+            elif "$password_rand" in lineaI:
+                scriptEP = scriptEP.replace('$password_username1', "$password_rand2")
+            
+            with open('./content/config/script/scriptEP.ps1', 'w') as file:
+                file.write(scriptEP)
+
+        lineaI = file1.readline()
+
     os.system("cat ./content/config/script/scriptEP.ps1 >> ./content/config/script/scriptWIN.ps1 2>/dev/null")
     
 
@@ -159,6 +181,9 @@ def prepararVulerabilidades():
     with open('./content/config/script/scriptWIN.ps1', 'w') as file:
         file.write(scriptWIN)
         file.write("\n\n")
+    
+    
+    
 
     
 def configuracion_final():
@@ -261,7 +286,7 @@ def actualizar_consola(vulI, vulEP):
     print("\n\t" + "- Escalada de privilegios: " + vulEP)
     print("\n\t" + "- El entorno esta creado en la interfaz de red vboxnet0.")
     print("\n\nRecuerda que una vez apagada las maquinas, no podras encenderlas otra vez. Deberas crear el entorno de nuevo, eligiendo la vulnerabilidad mencionada, esta vulnerabilidad esta guardada en el archivo ./content/walkthrough.txt")
-    print("\n Para mas informacion, ejecutar el programa e introducir el '3' para entrar en el panel de ayuda.")
+    print("\nPara mas informacion, ejecutar el programa e introducir el '3' para entrar en el panel de ayuda.")
     print("\n\nMucha suerte y good hack!!!")
 
 def borrarConf():
@@ -669,8 +694,8 @@ def actualizar_consola_AD(vulAD):
 
 mensajeFinal = ""
 numbersAD = ['01', '02', '03', '04', '05']
-numbersI = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
-numbersEP = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']
+numbersI = ['01', '02', '03', '04', '05', '06', '07', '08']
+numbersEP = ['01', '02', '03', '04', '05', '06', '07', '09', '10', '11', '12']#no configurado -> 08
 
 if __name__ == "__main__":
     #main()
@@ -722,21 +747,30 @@ if __name__ == "__main__":
 
     
     elif conf == "2":
-        '''
-        elegir de forma aleatoria entorno normal o AD
-        y hacer una funcion para elegir de forma aleatoria las difenretes vuls
-        random_vulI(vulI)
-        random_vulEP(vulEP)
-        random_vulAD(vulAd)
-        '''
-        print("En proceso...")
-        sys.exit(0)
+        print("\nElige un tipo de entorno:\n")
+        print("\t1.- Entorno windows normal(1)\n")
+        print("\t2.- Entorno Active Directory(2)\n")
+        tipoEntorno = input("Introduce un número: ")
+        if tipoEntorno == "1":
+            indexI = random.randint(0, len(numbersI) - 1)
+            indexEP = random.randint(0, len(numbersEP) - 1)
+            vulI = "I" + numbersI[indexI] 
+            vulEP = "EP" + numbersEP[indexEP]
+        elif tipoEntorno == "2":
+            indexAD = random.randint(0, len(numbersAD) - 1)
+            vulAD = "AD" + numbersI[indexAD] 
+            print(vulAD)
+        else:
+            print("Opcion no válida\n")
+            sys.exit(-1)        
+        
     elif conf=="3":
         help() 
     else:
         print("Introduce un numero correcto. (1-4)")
         sys.exit(0)
     
+
     if tipoEntorno == "1":
         eliminar_entorno_anterior()
         comprobar_red_host_only()
@@ -759,4 +793,4 @@ if __name__ == "__main__":
 
     
     
-    
+

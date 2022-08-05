@@ -8,12 +8,12 @@ I01 - Hydra ssh - Configurado
 I02 - Hydra smb y esteganografía - Configurado
 I03 - Hydra FTP y ssh con id_rsa - Configurado
 I04 - Hydra SMB y winrm - Configurado
-I05 - SMB Relay - Configurado - HACER CON TASKS
+I05 - SMB Relay - Configurado 
 I06 - FTP anonymous - Configurado
 I07 - FTP + id_rsa + local ftp anonymous - Configurado
 I08 - SNMP - Configurado
 
-I0X - SNMP(snmpwalk)
+I0X - SNMP(snmpwalk) - No sé como configurar
 
 
 EP01 - nc.exe - Configurado
@@ -26,14 +26,20 @@ EP07 - rundll32.exe - Configurado
 EP08 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
 EP09 - start menu(Modificar archivo) - Configurado
 EP010 - start menu(Crear ps1 en el path) - Configurado
+EP11 - DLL Hijacking - Configurado 
+EP12 - AlwaysInstallElevated(msiexec.exe) - Configurado 
+
+
+
+EPX - Unquoted Services path - No configurado - No se crea el servicio correctamente con sc.exe y no puedo iniciarlo
 
 
 
 AD01 - SMB relay + dump SAM + EP - Configurado
 AD02 - Pass the hash + EP - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
-AD04 - Kerberos - No Configurado, falta poner alguna cosa mas 
-AD05 - ASRPtoast - No Configurado, falta poner alguna cosa mas
+AD04 - Kerberos - Configurado, pero falta poner alguna cosa mas 
+AD05 - ASRPtoast - Configurado, pero falta poner alguna cosa mas
 
 
 

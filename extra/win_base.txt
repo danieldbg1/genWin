@@ -1,30 +1,63 @@
 Win Enterprise:
 
 Añadir Guest Guest Additions
+
 Desactivar firewall y antivirus.
+    A mano
+
 Instalar ssh
-Deshabilitar usuario daniel
+    Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+    Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
 Desactivar updates(control + r, services.msc, windows update disable)
-Habilitar administrador y ponerle password
+
+Habilitar administrador y ponerle password:
+    net user Administrador /active:yes
+    net user Administrador password 
+
 Habilitar ejecucion scripts(en alguna maquina deshabilitar)
+    Set-ExecutablePolicy Unrestricted
+
 Cambiar nombre pc, que no sea rjnm0...
 Desactivar apps que se ejecutan en el inicio de sesion.
-Borrar historial powershell
+    Desde administrador de tareas.
+
 Instalar ftp
+    Enable-WindowsOptionalFeature -Online -FeatureName IIS-FtpServer -All
+
 Instalar snmp
+    Add-WindowsCapability -Online -Name "SNMP.Client~~~~0.0.1.0"
+
+Instalar ps2exe
+    https://github.com/MScholtes/PS2EXE
+    Descargar e instalar
+
 Instalar modulo AD
+    Get-WindowsCapability -Name RSAT.ActiveDirectory* -Online | Add-WindowsCapability -Online
+
+Borrar historial powershell
+    Remove-Item (Get-PSReadlineOption).HistorySavePath
+
+
 
 Win Server:
 Añadir Guest Guest Additions
 Desinstalar  el defender
-Desactivar firewall y antivirus
+    Abrir powershell ISE -> Uninstall-WindowsFeature -Name Windows-Defender
+
 Añadir idioma español par poder cambiar el teclado.
+    En configuracion. añadir teclado en español 
+
 Borrar historial powershell
+    Remove-Item (Get-PSReadlineOption).HistorySavePath
+
 Cambiar politica de contraseñas
+    Set-ADDefaultDomainPasswordPolicy -Identity dominio -MinPasswordLength 2 -ComplexityEnabled $false
 
 
 
-Instalar como un  DC:
+Instalar como un DC:
     1.- Cambiar nombre PC. Panel de control -> sistema. Nombre: DC-Company
     2.- Domain Controller: Administrar -> roles  y características -> servicios de Active Directory (Active Directory Domain Services):
         - Nombre domain: genwin.local 

