@@ -18,7 +18,8 @@
 			- Añadir un usuario cualquiera(administrator@administrator.com) y saldrá un error. Justo debajo saldrá una opción para crear un usuario local, elegimos esa opción y elegimos un usuario cualquiera.
 			- Si no podemos poner el @, abajo a la derecha podemos cambiar al otro teclado elegido anteriormente.
 			- Terminar configuracion.
-			- Desactivar notificaciones UAC -> Pulsar tecla windows, escribir uac y enter. Poner la opción "Never Notify".
+			- Habilitar usuario administrador -> net user Administrador /active:yes 
+			- Añadir contraseña al administrador -> net user Administrador password
 			- Añadir guest additions:
 				- Pinchar en "Dispositivos" y luego en "Insertar imagen de CD de las guest additions".
 				- Abrir el explorador, pinchar en "This PC", Virtualbox guest additions, instalar la opcion amd64 y reiniciar.
