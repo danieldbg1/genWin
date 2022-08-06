@@ -32,7 +32,7 @@
 		2. Configurar windows server 2022:
 			- Elegir el idioma por defecto y pulsar next.
 			- Elegir el segundo sistema operativo.
-			- Cuidado al poner la contraseña. Mirar la contraseña antes de darle a next.
+			- Cuidado al poner la contraseña. Mirar la contraseña antes de darle a next. Contraseña recomendada -> Password123*
 			- Añadir guest additions:
 				- Pinchar en "Dispositivos" y luego en "Insertar imagen de CD de las guest additions".
 				- Abrir el explorador, pinchar en "This PC", Virtualbox guest additions, instalar la opcion amd64 y reiniciar.
