@@ -21,6 +21,7 @@
 			- Terminar configuracion.
 			- Habilitar usuario administrador -> net user Administrador /active:yes 
 			- Añadir contraseña al administrador -> net user Administrador password
+			- Desactivar Tamper Protection: Seguridad de windows -> Proteccion antivirus -> Administrar configuracion -> Tamper Protection
 			- Añadir guest additions:
 				- Pinchar en "Dispositivos" y luego en "Insertar imagen de CD de las guest additions".
 				- Abrir el explorador, pinchar en "This PC", Virtualbox guest additions, instalar la opcion amd64 y reiniciar.
