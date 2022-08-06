@@ -11,7 +11,7 @@
 		- Windows server 2022 -> https://www.microsoft.com/es-es/evalcenter/evaluate-windows-server-2022
 	
 	2. Configurar iso:
-		2.1. Configurar windows 10:
+		1. Configurar windows 10:
 			- Elegir el idioma por defecto, ingles.
 			- Añadir teclado por defecto, ingles.
 			- Añadir segundo telado a gusto del usuario, en mi caso, spanish(spain)
@@ -26,4 +26,4 @@
 				- En la configuración de la maquina, en sistema, poner 1 procesador y 32MB de memoria base. 
 				- vboxmanage export nombre_maquina -o fichero.ova
 		
-		2.2. Configurar windows server 2022:
+		2. Configurar windows server 2022:
