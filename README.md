@@ -23,6 +23,7 @@ Configurar ova en blanco a partir de un fichero iso:
 				- Abrir el explorador, pinchar en "This PC", Virtualbox guest additions, instalar la opcion amd64 y reiniciar.
 			- Crear ova:
 				- Apagar la maquina.
+				- En la configuración de la maquina, en sistema, poner 1 procesador y 32MB de memoria base. 
 				- vboxmanage export nombre_maquina -o fichero.ova
 		
 		2.2.- Configurar windows server 2022:
