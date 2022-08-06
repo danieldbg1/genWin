@@ -1,5 +1,5 @@
 # winGen
-
+de 
 Descargar los siguientes ficheros ova y guardar en la carpeta ova:
 
 	- https://drive.google.com/file/d/1VgTg8QotYyTq66W06LO0PS-ejrmvfo7a/view?usp=sharing
@@ -18,5 +18,11 @@ Configurar ova en blanco a partir de un fichero iso:
 			- Añadir un usuario cualquiera(administrator@administrator.com) y saldrá un error. Justo debajo saldrá una opción para crear un usuario local, elegimos esa opción y elegimos un usuario cualquiera.
 			- Si no podemos poner el @, abajo a la derecha podemos cambiar al otro teclado elegido anteriormente.
 			- Terminar configuracion.
+			- Añadir guest additions:
+				- Pinchar en "Dispositivos" y luego en "Insertar imagen de CD de las guest additions".
+				- Abrir el explorador, pinchar en "This PC", Virtualbox guest additions, instalar la opcion amd64 y reiniciar.
+			- Crear ova:
+				- Apagar la maquina.
+				- vboxmanage export nombre_maquina -o fichero.ova
 		
 		2.2.- Configurar windows server 2022:
