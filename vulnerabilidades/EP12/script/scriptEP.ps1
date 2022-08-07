@@ -18,8 +18,8 @@ reg add HKU\$sid\Software\Policies\Microsoft\Windows\Installer\ /v AlwaysInstall
 ' > C:\config\config.ps1
 
 
-##configuracion_script:vboxmanage guestcontrol win10 --username "$username1" --password "$password_username1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\config\sleep.ps1" 2>/dev/null &
+##configuracion_script:vboxmanage guestcontrol winEnt --username "$username1" --password "$password_username1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\config\sleep.ps1" 2>/dev/null &
 ##configuracion_script:sleep 3
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\config\config.ps1" 2>/dev/null &
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\config\config.ps1" 2>/dev/null &
 ##configuracion_script:sleep 5
 ##configuracion_script:clear

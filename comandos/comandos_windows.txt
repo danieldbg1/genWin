@@ -4,7 +4,7 @@ Abrir powershell ISE -> Uninstall-WindowsFeature -Name Windows-Defender
 
 
 Permitir ejecutar .bat:
-Set-ExecutablePolicy Unrestricted
+Set-ExecutionPolicy Unrestricted
 
 
 Instalar ssh:
@@ -20,6 +20,24 @@ net user Administrador password -> se guarda la config del Admin.
 Crear grupo y añadir usuario:
 net localgroup group_name /comment:"text" /add
 net localgroup group_name user /add 
+
+
+Activar UAC
+$path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+Set-ItemProperty -Path $path -Name 'ConsentPromptBehaviorAdmin' -Value 2 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'ConsentPromptBehaviorUser' -Value 3 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'EnableInstallerDetection' -Value 1 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'EnableLUA' -Value 1 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'EnableVirtualization' -Value 1 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'PromptOnSecureDesktop' -Value 1 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'ValidateAdminCodeSignatures' -Value 0 -PropertyType DWORD -Force | Out-Null
+Set-ItemProperty -Path $path -Name 'FilterAdministratorToken' -Value 0 -PropertyType DWORD -Force | Out-Null
+
+Desactiar firewall:
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
+Desactivar antivirus en tiempo real:
+Set-MpPreference -DisableRealtimeMonitoring $true
 
 
 Permisos de archivos:
@@ -39,8 +57,6 @@ $acl | Set-Acl path\file
 
 Si hay cambios, reiniciar terminal.
 
-Desactivar antivirus en tiempo real:
-Set-MpPreference -DisableRealtimeMonitoring $true
 
 Winrm:
 Añadir usuario grupo Winrm:
@@ -264,8 +280,6 @@ netsh interface show interface
 
 netsh interface ipv4 set dnsservers "Interface Name" static IP primary //Interface Name = Ethernet
 netsh interface ipv4 add dnsservers "Interface Name" IP index=2
-or 
-Set-DnsClientServerAddress -InterfaceIndex 6 -ServerAddress "IP, second_IP"
 
 
 Añadir usuario AD:(Hay que reiniciar)

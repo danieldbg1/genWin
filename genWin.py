@@ -44,11 +44,6 @@ def help():
 def eliminar_entorno_anterior():
     if os.path.isdir("./content/"):
         os.system("rm -r ./content/ 2>/dev/null")
-
-    aux=subprocess.Popen("vboxmanage list vms | grep -w win10", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
-    result = aux.stdout.read().decode()
-    if "win10" in result:
-        os.system("vboxmanage unregistervm 'win10' --delete 2>/dev/null")
     
     aux=subprocess.Popen("vboxmanage list vms | grep -w winEnt", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
     result = aux.stdout.read().decode()
@@ -239,7 +234,7 @@ def crearEntorno():
 
         if "$IP" in linea:
             if ip =="":
-                aux=subprocess.Popen("vboxmanage guestcontrol win10 --username 'Administrator' --password 'hola' run -- 'C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe' 'ipconfig.exe' | grep '192.168' | awk '{print $NF}'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                aux=subprocess.Popen("vboxmanage guestcontrol winEnt --username 'Administrator' --password 'hola' run -- 'C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe' 'ipconfig.exe' | grep '192.168' | awk '{print $NF}'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 err = aux.stderr.read().decode()
                 if err != "":
                     print("\nError IP:\n" + err)
@@ -676,7 +671,7 @@ def actualizar_consola_AD(vulAD):
     os.system("figlet genWin.py")
     os.system("echo \n")
 
-    print("" + "El entorno windows ya esta creado. Las vulnerabilidades utilizadas son las siguientes: ")
+    print("El entorno windows ya esta creado. Las vulnerabilidades utilizadas son las siguientes: ")
     print("\n\t" + "- Vulnerabilidad: " + vulAD)
     if mensajeFinal != "":
         print("\t" + mensajeFinal)
@@ -686,8 +681,139 @@ def actualizar_consola_AD(vulAD):
     print("\n\nMucha suerte y good hack!!!")
     
 
+def crear_ova_base():
+    if os.path.isdir("./content/"):
+        os.system("rm -r ./content/ 2>/dev/null")
+    print("\nRecuerda que para configurar el ova correctamente, debe tener instalado Guest Additions.\n")
+    print("\nElige que maquina base quieres crear:\n")
+    print("\t1.- Maquina windows 10 enterprise (1)")
+    print("\t2.- Maquina windows server 2022 (2)")
+    tipoMaquina = input("Introduce un número: ")
+    if tipoMaquina == "1":
+        path = input("Introduce el path del archivo ova a configurar: ")
+        if os.path.exists(path) and ".ova" in path:
+            print("\nIntroduce la contraseña del administrador:")
+            password = input("\tContraseña: ")
+            
+            os.system("clear")
+            os.system("figlet genWin.py")
+            os.system("echo \n")
 
- 
+            os.system("mkdir ./content")
+            os.system("cp ./ova/configuracion_base/winEnt/win10Enterprise.ps1 ./content/win10Enterprise.ps1 2>/dev/null")
+            os.system("cp ./ova/configuracion_base/winEnt/win10Enterprise_base.txt ./content/win10Enterprise_base.txt 2>/dev/null")
+            
+            file = open("./content/win10Enterprise_base.txt", "r")
+            script = file.read()
+            file.closed
+            script = script.replace('$fichero', path)
+            script = script.replace('$password', password)
+            with open("./content/win10Enterprise_base.txt", 'w') as file:
+                file.write(script)            
+
+
+            file = open("./content/win10Enterprise_base.txt", "r")
+            aux = file.readline()
+            count = 0
+            while aux:
+                count+=1
+                aux = file.readline()
+            file.closed
+            file = open("./content/win10Enterprise_base.txt", "r")
+            file.closed
+            linea = file.readline()
+            print("\n\tCreando maquina virtual\n")
+            for i in progressbar(range(count), redirect_stdout=True):
+                if "##mensaje:" in linea:
+                    aux = linea.split("##mensaje:")
+                    print("\t" + aux[1] + "\n")
+                
+                aux=subprocess.Popen(linea, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                errOutput = aux.stderr.read().decode()
+                if errOutput != "":
+                    if "0%..." not in errOutput:
+                        if "OK" not in errOutput:
+                            if "Closing the remote server shell instance" not in errOutput:
+                                print("\nError:\n" + errOutput)
+                                print("\nComando fallido: " + linea + "\n")
+                                sys.exit(-1)
+                
+                linea = file.readline()
+
+        else:
+            print("Introduce el directorio absoluto o relativo correcto de un archivo ova a configurar.")
+            sys.exit(-1)
+    elif tipoMaquina == "2":
+        path = input("Introduce el path del archivo ova a configurar: ")
+        if os.path.exists(path) and ".ova" in path:
+            print("\nIntroduce la contraseña del administrador:")
+            password = input("\tContraseña: ")
+            os.system("clear")
+            os.system("figlet genWin.py")
+            os.system("echo \n")
+
+            os.system("mkdir ./content")
+            os.system("cp ./ova/configuracion_base/winServer/winServer2022_1.ps1 ./content/winServer2022_1.ps1 2>/dev/null")
+            os.system("cp ./ova/configuracion_base/winServer/winServer2022_2.ps1 ./content/winServer2022_2.ps1 2>/dev/null")
+            os.system("cp ./ova/configuracion_base/winServer/winServer2022_3.ps1 ./content/winServer2022_3.ps1 2>/dev/null")
+            os.system("cp ./ova/configuracion_base/winServer/winServer2022_base.txt ./content/winServer2022_base.txt 2>/dev/null")
+            
+            file = open("./content/winServer2022_base.txt", "r")
+            script = file.read()
+            file.closed
+            script = script.replace('$fichero', path)
+            script = script.replace('$password', password)
+            with open("./content/winServer2022_base.txt", 'w') as file:
+                file.write(script)            
+            
+            file = open("./content/winServer2022_2.ps1", "r")
+            script = file.read()
+            file.closed
+            script = script.replace('$password', password)
+            with open("./content/winServer2022_2.ps1", 'w') as file:
+                file.write(script) 
+
+            file = open("./content/winServer2022_base.txt", "r")
+            aux = file.readline()
+            count = 0
+            while aux:
+                count+=1
+                aux = file.readline()
+            file.closed
+
+            file = open("./content/winServer2022_base.txt", "r")
+            file.closed
+            linea = file.readline()
+            print("\n\tCreando maquina virtual\n")
+            for i in progressbar(range(count), redirect_stdout=True):
+                if "##mensaje:" in linea:
+                    aux = linea.split("##mensaje:")
+                    print("\t" + aux[1] + "\n")
+                    
+                aux=subprocess.Popen(linea, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                errOutput = aux.stderr.read().decode()
+                if errOutput != "":
+                    if "0%..." not in errOutput:
+                        if "OK" not in errOutput:
+                            if "Closing the remote server shell instance" not in errOutput:
+                                print("\nError:\n" + errOutput)
+                                print("\nComando fallido: " + linea + "\n")
+                                sys.exit(-1)
+                linea = file.readline()
+
+        else:
+            print("Introduce el directorio absoluto o relativo correcto de un archivo ova a configurar.")
+            sys.exit(-1)
+    
+    os.system("rm -r ./content")
+    os.system("clear")
+    os.system("figlet genWin.py")
+    os.system("echo \n")
+    print("Fichero ova creado con exito y guardado en el carpeta  ./ova.\n")
+
+    sys.exit(0)
+
+
 
 #def main():
 #    print("Hello World!")
@@ -701,7 +827,8 @@ if __name__ == "__main__":
     #main()
     print("1.- Generar entorno de forma manual (1)")
     print("2.- Generar entorno de forma aleatoria (2)")
-    print("3.- Help (3)")
+    print("3.- Crear fichero ova (3)")
+    print("4.- Help (4)")
     
     conf = input("Introduce un número: ")
     if conf == "1":
@@ -765,6 +892,9 @@ if __name__ == "__main__":
             sys.exit(-1)        
         
     elif conf=="3":
+        eliminar_entorno_anterior()
+        crear_ova_base()
+    elif conf=="4":
         help() 
     else:
         print("Introduce un numero correcto. (1-4)")

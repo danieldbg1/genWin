@@ -1,13 +1,13 @@
-vboxmanage import ./ova/winEnterprise.ova  --vsys 0 --vmname "win10" --group "" --memory 2048 
+vboxmanage import ./ova/winEnterprise.ova  --vsys 0 --vmname "winEnt" --group "" --memory 2048 
 ##mensaje:Preparando configuracion
-vboxmanage startvm win10 --type headless
-vboxmanage controlvm win10 nic1 hostonly vboxnet0 
+vboxmanage startvm winEnt --type headless
+vboxmanage controlvm winEnt nic1 hostonly vboxnet0 
 sleep 30 
 ##mensaje:Configurando el entorno...
-vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
-vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
+vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
+vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
 pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/ -Destination "C:\Users\administrator\Desktop\" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
 pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Invoke-Command -Authentication Negotiate -ComputerName $IP -Credential $Credential -ScriptBlock { C:\Users\administrator\Desktop\script\scriptWIN.ps1 }'
 ##mensaje:Reiniciando y ultimos retoques
 sleep 40
-vboxmanage guestcontrol win10 --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"
+vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"

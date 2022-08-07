@@ -42,8 +42,8 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 
 
 
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "net user '$username2' '$password1' /add"
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /add'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "net user '$username2' '$password1' /add"
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /add'
 ##configuracion_script:pwsh -c '$user = "$username2";$pass = ConvertTo-SecureString -String "$password1" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential;'
 
 ##configuracion_script:echo 'New-WebFtpSite -Name "ftp_usuario" -Port '2121' -PhysicalPath "C:\\Users\\$username2\\" -IPAddress $IP -Force' >> ./content/config/script/scriptWIN2.ps1
@@ -54,7 +54,7 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 
 
 ##configuracion_script:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "$password_rand1" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Path ./content/config/script/scriptWIN2.ps1 -Destination "C:\Users\administrator\Desktop\script\scriptWIN2.ps1" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\scriptWIN2.ps1"
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\scriptWIN2.ps1"
 
 
 

@@ -1,0 +1,26 @@
+vboxmanage import $fichero --vsys 0 --vmname "winServer" --group "" --memory 2048 
+##mensaje:Maquina creada con exito
+vboxmanage sharedfolder add winServer --name config --hostpath content --automount
+vboxmanage startvm winServer --type headless
+##mensaje:Configurando maquina virtual
+sleep 40
+vboxmanage controlvm winServer nic1 nat
+vboxmanage guestcontrol winServer --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Set-ExecutionPolicy Unrestricted -Force"
+vboxmanage guestcontrol winServer --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Z:\winServer2022_1.ps1"
+sleep 40
+
+vboxmanage guestcontrol winServer --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Z:\winServer2022_2.ps1"
+##mensaje:Ultimo reinicio (3 minutos)
+vboxmanage controlvm winServer nic1 nat
+sleep 180
+
+vboxmanage guestcontrol winServer --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Z:\winServer2022_3.ps1"
+
+vboxmanage controlvm winServer poweroff
+vboxmanage sharedfolder remove winServer -name config
+rm -r ./content
+##mensaje:Maquina configurada
+##mensaje:Creando ova final, esto puede tardar varios minutos
+vboxmanage modifyvm winServer --memory 32
+vboxmanage export winServer -o ./ova/winServer.ova
+vboxmanage unregistervm 'winServer' --delete

@@ -40,17 +40,17 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 
 
 
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "net user '$username2' '$password1' /add"
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /add'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "net user '$username2' '$password1' /add"
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /add'
 ##configuracion_script:pwsh -c '$user = "$username2";$pass = ConvertTo-SecureString -String "$password1" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential;'
 
 
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Set-SmbServerConfiguration -EnableSMB1Protocol 1 -Force'
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Set-SmbServerConfiguration -AuditSmb1Access $true -Force'
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "New-SmbShare -Name 'folder' -Path 'C:\Users\$username2\' -FullAccess 'Administrator'"
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Grant-SmbShareAccess -Name "folder" -AccountName "$username2" -AccessRight Full -Force'
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'mkdir C:\Users\$username2\.ssh\'
-##configuracion_script:vboxmanage guestcontrol win10 --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /delete'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Set-SmbServerConfiguration -EnableSMB1Protocol 1 -Force'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Set-SmbServerConfiguration -AuditSmb1Access $true -Force'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "New-SmbShare -Name 'folder' -Path 'C:\Users\$username2\' -FullAccess 'Administrator'"
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'Grant-SmbShareAccess -Name "folder" -AccountName "$username2" -AccessRight Full -Force'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'mkdir C:\Users\$username2\.ssh\'
+##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" 'net localgroup "Remote Management Users" $username2 /delete'
 
 
 

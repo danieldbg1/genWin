@@ -25,7 +25,7 @@ echo 'ls \\share\\secreto' > C:\programa\programa.ps1
 ##configuracion_script:echo '#!/bin/bash' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'while true' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'do' >> ./content/config/programaWinGen.sh
-##configuracion_script:echo 'vboxmanage guestcontrol win10 --username "$username1" --password "$password1" run -- "C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe" "C:\programa\programa.ps1" 2>/dev/null &' >> ./content/config/programaWinGen.sh
+##configuracion_script:echo 'vboxmanage guestcontrol winEnt --username "$username1" --password "$password1" run -- "C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe" "C:\programa\programa.ps1" 2>/dev/null &' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'sleep 10' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'done' >> ./content/config/programaWinGen.sh
 ##configuracion_script:chmod +x ./content/config/programaWinGen.sh
