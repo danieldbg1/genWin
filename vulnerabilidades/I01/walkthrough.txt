@@ -10,6 +10,6 @@ Empezamos escaneado la red con nmap:
 Vemos que el puerto 22 esta abierto y con el servicio ssh. Probamos hacer un ataque de fuerza bruta a este servicio:
     - Utilizar los siguientes diccionarios -> ./diccionarios/names.txt y ./diccionarios/passwords.txt 
 
-    - hydra -L names.txt -P passwords.txt ssh://IP
+    - hydra -L ./diccionarios/names.txt -P  ./diccionarios/passwords.txt -6 ssh://[IPv6] -> No funciona
 
 Y encontramos una credencial valida. Nos conectamos con rdesktop y ya hemos hecho la intrusión.

@@ -1,0 +1,26 @@
+User.txt
+Empezamos verificando que se ha creado una interfaz de red llamada vboxnet0:
+    - ifconfig
+
+Empezamos escaneado la red con nmap:
+    - Descubrir cuantos hosts hay -> nmap 192.168.56.0/24 -sn -T5
+
+Pero no encuentra nada.
+ 
+Pero no hay nada interesante, probamos hacer nmap por UDP:
+    - udo nmap -sU --top-ports 1000 -T5 192.168.56.0/24
+
+Tampoco hay nada.
+
+Solo nos queda mirar por ipv6.
+    - sudo nmap -6 --script=targets-ipv6-multicast-mld.nse --script-args '192.168.56.0/24,interface=vboxnet0'
+    - nmap -6 fe80::c4b2:c857:387b:b423%vboxnet0
+    - nmap -6 fe80::c4b2:c857:387b:b423%vboxnet0 -sCV 
+
+Hacemos hydra al ssh:
+    - 
+
+Nos podemos conectar por ssh:
+    - ssh -6 administrator@fe80::c4b2:c857:387b:b423%vboxnet0
+
+Pero para que sea mas comodo nos conectaremos por rdesktop. 

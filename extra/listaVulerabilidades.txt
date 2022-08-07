@@ -12,6 +12,8 @@ I05 - SMB Relay - Configurado
 I06 - FTP anonymous - Configurado
 I07 - FTP + id_rsa + local ftp anonymous - Configurado
 I08 - SNMP - Configurado
+I09 - IPv6 + hydra ssh - No configurado, no funciona el hydra, la conexion ssh si la hace
+
 
 I0X - SNMP(snmpwalk) - No sé como configurar
 
