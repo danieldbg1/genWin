@@ -1,4 +1,4 @@
-# winGen
+# genWin
  
 - Descargar los siguientes ficheros ova y guardar en la carpeta ova:
 
