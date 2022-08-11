@@ -1,5 +1,3 @@
 vboxmanage
 pwsh
 steghide
-
-exiftool?
