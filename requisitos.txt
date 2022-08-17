@@ -1,3 +1,5 @@
 vboxmanage
 pwsh
 steghide
+figlet
+python3

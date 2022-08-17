@@ -1,4 +1,4 @@
-##mensaje:Preparando configuracion
+##mensaje:Creando entorno Windows
 
 vboxmanage import ./ova/winServer.ova  --vsys 0 --vmname "winServer" --group "" --memory 2048 
 vboxmanage startvm winServer --type headless
@@ -7,6 +7,8 @@ vboxmanage controlvm winServer nic1 hostonly vboxnet0
 vboxmanage import ./ova/winEnterprise.ova  --vsys 0 --vmname "winEnt" --group "" --memory 2048 
 vboxmanage startvm winEnt --type headless
 vboxmanage controlvm winEnt nic1 hostonly vboxnet0 
+
+##mensaje:Preparando configuracion
 
 sleep 40
 

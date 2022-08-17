@@ -10,7 +10,7 @@ rpcclient -U "genwin.local\username%password" IP
 rdesktop y vemos que estamo sen el grupo administrators:
 get-aduser -identit username -property memberof 
 
- probamos hacer rdesktop en el DC y nos deja.
+probamos hacer rdesktop en el DC y nos deja.
 
 
 UAC Bypass y asi poder ejecutar el mimikatz.exe:

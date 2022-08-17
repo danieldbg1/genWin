@@ -6,7 +6,7 @@ Lista:
 
 I01 - Hydra ssh - Configurado
 I02 - Hydra smb y esteganografía - Configurado
-I03 - Hydra FTP y ssh con id_rsa - Configurado
+I03 - Hydra SMB y ssh con id_rsa + local ftp anonymous - Configurado
 I04 - Hydra SMB y winrm - Configurado
 I05 - SMB Relay - Configurado 
 I06 - FTP anonymous - Configurado
@@ -37,7 +37,7 @@ EPX - Unquoted Services path - No configurado - No se crea el servicio correctam
 
 
 
-AD01 - SMB relay + dump SAM + EP - Configurado
+AD01 - SMB relay + EP - Configurado
 AD02 - Pass the hash + EP - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
 AD04 - Kerberos - Configurado, pero falta poner alguna cosa mas 
@@ -59,7 +59,7 @@ Consiste en hacer fuerza bruta al protocolo ssh para obtener las credenciales.
 I02 - Hydra smb y esteganografía:
 Consiste en hacer fuerza bruta al protocolo smb, entrar y descargar una imagen, la cual tiene escondida un zip concontraseña. Romperla con john y obtienes credenciales de acceso.
 
-I03 - Hydra FTP y ssh con id_rsa:
+I03 - Hydra SMB y ssh con id_rsa:
 Consiste en hacer fuerza bruta al protocolo FTP. Al tener privilegios de escritura en un directorio de usuario, crear carpeta .ssh e introducir un archivo authorized_keys con una clave publica creada previamente para entrar por ssh sin passwords.
 
 I04 - Hydra SMB y winrm:
@@ -107,13 +107,13 @@ Se puede leer el los archivos en el directorio C:\ProgramData\Microsoft\Windows\
 
 
 AD01 - SMB relay + dump SAM:
-Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, el cual se puede crackear y obtener una credencial valida de un usuario del dominio.
+Consiste en realizar un envenamiento de red y obtener un hash NTLMv2 y usarlo para obtener la SAM del windows enterprise siempre y cuando el hash sea de un usuario administrador.
 
 AD02 - Pass the hash:
-Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, pero al no poder crackearlo, es utilizado para dumpear la SAM de un PC, para luego obtener alguna contraseña.
+Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, pero al no poder crackearlo, es utilizado para ejecutar un comando y obtener acceso al windows enterprise. 
 
-AD03 - Enumeracion rpcclient;
-Consiste en realizar una enumeracion básica con la herramienta rpcclient con una credencial valida que nos otorga el programa al principio. En esta enumeracion, se obtiene la credencial de un usuario dentro del grupo administradores, pudiendo conectarse al DC y realizar un Golde Ticket attack.
+AD03 - Enumeracion rpcclient + Golden Ticket Attack:
+Consiste en realizar una enumeracion básica con la herramienta rpcclient con una credencial valida que nos otorga el programa al principio. En esta enumeracion, se obtiene la credencial de un usuario dentro del grupo administradores, pudiendo conectarse al DC y realizar un Golden Ticket attack.
 
 
 AD04 - Kerberos: 

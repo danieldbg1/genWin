@@ -1,6 +1,5 @@
-sudo nano /etc/hosts y añadir la IP y el dominio
-
-IP  genwin.local genwin DC-Company
+sudo nano /etc/hosts y añadir la IP y el dominio:
+    IP  genwin.local genwin DC-Company
 
 GetUserSPNs.py genwin.local/username:password 
 y vemos si hay algun usuario al que se le pueda hacer un ataque kerberos.

@@ -15,8 +15,6 @@ from django import conf
 from matplotlib import lines
 from numpy import asfarray, character
 from sqlalchemy import false, true
-from progress.bar import Bar
-from progressbar import progressbar
 
 #No funciona siempre
 def control_c(signum, frame):
@@ -208,14 +206,6 @@ def configuracion_final():
 
 
 def crearEntorno(): 
-    file = open("./content/config/script.txt", "r")
-    aux = file.readline()
-    count = 0
-    while aux:
-        count+=1
-        aux = file.readline()
-    file.closed
-
     script_vm = open("./content/config/script.txt", "r")
     linea = script_vm.readline()
     script_vm.closed
@@ -225,12 +215,10 @@ def crearEntorno():
     os.system("echo \n")
 
     ip=""
-    print("\tCreando el entorno windows\n")
-    for i in progressbar(range(count), redirect_stdout=True):
+    while(linea):
         if "##mensaje:" in linea:
             aux = linea.split("##mensaje:")
             print("\t" + aux[1])
-            print("\n")
 
         if "$IP" in linea:
             if ip =="":
@@ -248,14 +236,6 @@ def crearEntorno():
         
         if "2>/dev/null &" in linea:
             os.system(linea)
-            '''
-            aux=subprocess.Popen(linea, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = aux.communicate()
-            errOutput = err.decode().strip()
-            if errOutput != "":
-                print("\nError:\n" + errOutput)
-                sys.exit(-1)
-            '''
         else:
             aux=subprocess.Popen(linea, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             errOutput = aux.stderr.read().decode()
@@ -584,14 +564,6 @@ def configuracion_final_AD(vulAD):
 
 
 def crearEntorno_AD():
-    file = open("./content/config/script/script.txt", "r")
-    aux = file.readline()
-    count = 0
-    while aux:
-        count+=1
-        aux = file.readline()
-    file.closed
-
     script_vm = open("./content/config/script/script.txt", "r")
     linea = script_vm.readline()
     script_vm.closed
@@ -603,12 +575,10 @@ def crearEntorno_AD():
     ipWinEnt=""
     ipWinServer=""
 
-    print("\tCreando el entorno windows\n")
-    for i in progressbar(range(count), redirect_stdout=True):
+    while(linea):
         if "##mensaje:" in linea:
             aux_mensaje = linea.split("##mensaje:")
             print("\t" + aux_mensaje[1])
-            print("\n")
 
         if "##mensajeFinal:" in linea:
             global mensajeFinal 
@@ -647,8 +617,6 @@ def crearEntorno_AD():
                     ipWinEnt = aux.stdout.read().decode().strip()
             
                 linea = linea.replace('$IP', ipWinEnt)
-        
-        print(linea.strip()+"\n")
 
         if "2>/dev/null &" in linea:
             os.system(linea)
@@ -722,8 +690,7 @@ def crear_ova_base():
             file = open("./content/win10Enterprise_base.txt", "r")
             file.closed
             linea = file.readline()
-            print("\n\tCreando maquina virtual\n")
-            for i in progressbar(range(count), redirect_stdout=True):
+            while(linea):
                 if "##mensaje:" in linea:
                     aux = linea.split("##mensaje:")
                     print("\t" + aux[1] + "\n")
@@ -784,8 +751,7 @@ def crear_ova_base():
             file = open("./content/winServer2022_base.txt", "r")
             file.closed
             linea = file.readline()
-            print("\n\tCreando maquina virtual\n")
-            for i in progressbar(range(count), redirect_stdout=True):
+            while(linea):
                 if "##mensaje:" in linea:
                     aux = linea.split("##mensaje:")
                     print("\t" + aux[1] + "\n")

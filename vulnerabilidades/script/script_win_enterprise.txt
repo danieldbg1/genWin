@@ -1,3 +1,4 @@
+##mensaje:Creando entorno Windows
 vboxmanage import ./ova/winEnterprise.ova  --vsys 0 --vmname "winEnt" --group "" --memory 2048 
 ##mensaje:Preparando configuracion
 vboxmanage startvm winEnt --type headless

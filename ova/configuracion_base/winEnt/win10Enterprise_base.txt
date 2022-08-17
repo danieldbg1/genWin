@@ -1,3 +1,5 @@
+##mensaje:Creando maquina virtual a partir del archivo ova
+
 vboxmanage import $fichero --vsys 0 --vmname "winEnt" --group "" --memory 2048 
 ##mensaje:Maquina creada con exito
 vboxmanage sharedfolder add winEnt --name config --hostpath content --automount
