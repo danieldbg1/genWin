@@ -1,5 +1,4 @@
 from curses import intrflush
-from distutils.log import error
 from posixpath import split
 import random
 import signal, os
@@ -16,6 +15,7 @@ from matplotlib import lines
 from numpy import asfarray, character
 from sqlalchemy import false, true
 
+
 #No funciona siempre
 def control_c(signum, frame):
     print('\n\n[!] Saliendo...')
@@ -31,9 +31,8 @@ def help():
     print("Se puede generar un entorno normal(1 solo PC windows) o AD(2 o mas PCs, un windows server y el resto windows 10\n")
     print("Se puede generar el entorno de forma aleatoria o manual. En el archivo extra/listaVulerabilidades.txt estan las vulneravilidades explicadas\n")
     print("Cuando se genera un entorno y este se apaga(apaga la/s maquina/s, no se podran encender otra vez correctamente. Para ello siga las siguientes pasos:")
-    print("\n\t 1.- Eliminar las maquinas creadas.")
-    print("\n\t 2.- Generar el entorno deseado de forma manual.")
-    print("\n\t 3.- Las vulnerabilidad estan apuntadas en el archivo ./content/walkthrough.txt")
+    print("\n\t 1.- Generar el entorno deseado de forma manual.")
+    print("\n\t 2.- Las vulnerabilidad estan apuntadas en el archivo ./content/walkthrough.txt")
     print("\n\n\t\tIMPORTANTE!!! Mirar las vulnerabilidades en el ./content/walkthrough.txt antes de ejecutar el programa o se elminaran.")
     
     sys.exit(0)
@@ -232,7 +231,7 @@ def crearEntorno():
         
             linea = linea.replace('$IP', ip)
             
-        #print(linea.strip()+"\n")
+        print(linea.strip()+"\n")
         
         if "2>/dev/null &" in linea:
             os.system(linea)

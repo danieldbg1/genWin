@@ -19,7 +19,6 @@ Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart
 
 
 
-##configuracion_script_final:net user Administrator '$password_rand1'
 ##configuracion_script_final:Set-SmbServerConfiguration -EnableSMB1Protocol 1 -Force
 ##configuracion_script_final:Set-SmbServerConfiguration -AuditSmb1Access $true -Force
 

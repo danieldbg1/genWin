@@ -17,11 +17,6 @@ echo 'ls \\share\\secreto' > C:\programa\programa.ps1
 
 
 
-
-##configuracion_script_final:net user Administrator '$password_rand1'
-
-
-
 ##configuracion_script:echo '#!/bin/bash' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'while true' >> ./content/config/programaWinGen.sh
 ##configuracion_script:echo 'do' >> ./content/config/programaWinGen.sh

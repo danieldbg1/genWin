@@ -35,3 +35,6 @@ $acl | Set-Acl "C:\Program Files (x86)\Microsoft\Edge\Application"
 ##configuracion_script:echo 'done' >> ./content/config/programaWinGen.sh
 ##configuracion_script:chmod +x ./content/config/programaWinGen.sh
 ##configuracion_script:sh ./content/config/programaWinGen.sh 2>/dev/null &
+
+
+##configuracion_script_final:net user Administrator '$password_rand1'

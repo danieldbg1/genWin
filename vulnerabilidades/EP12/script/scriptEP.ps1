@@ -5,7 +5,7 @@ $farmCredential = New-Object System.Management.Automation.PsCredential("$usernam
 Start-Process powershell.exe "Start-Sleep 20" -Credential $farmCredential -Wait -WindowStyle Hidden
 ' > C:\config\sleep.ps1
 
-#Cuidado con las comillas y $
+
 echo '
 New-Item -Path HKLM:\Software\Policies\Microsoft\Windows\ -Name Installer 
 New-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\Installer\ -Name AlwaysInstallElevated -Value 1
@@ -23,3 +23,6 @@ reg add HKU\$sid\Software\Policies\Microsoft\Windows\Installer\ /v AlwaysInstall
 ##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\config\config.ps1" 2>/dev/null &
 ##configuracion_script:sleep 5
 ##configuracion_script:clear
+
+
+##configuracion_script_final:net user Administrator '$password_rand1'

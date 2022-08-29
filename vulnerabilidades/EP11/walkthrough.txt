@@ -31,8 +31,6 @@ Nos lo descargamos en la maquina:
 Le cambiamos le nombre y lo ponemos en el path correspondiente:
     - cp evil.dll "C:\Program Files (x86)\Microsoft\Edge\Application\CRYPTBASE.DLL"
 
-Abrimos el edge para comprobar su funciona.
-
 Ahora esperamos a que otro usuario abra el edge y asi conectarnos como el. Tardara un minuto mas o menos.
 
 Este ataque se puede hacer con cualquier .dll que aparezca al filtrar, pero debemos tener perisos de escritura en ese directorio.

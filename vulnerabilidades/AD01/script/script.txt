@@ -10,13 +10,9 @@ vboxmanage controlvm winEnt nic1 hostonly vboxnet0
 
 ##mensaje:Preparando configuracion
 
-sleep 40
+sleep 60
 
 ##mensaje:Configurando el entorno...
-
-vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
-
-vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
 
 vboxmanage guestcontrol winServer --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
 
@@ -34,9 +30,9 @@ vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run 
 
 ##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Invoke-Command -Authentication Negotiate -ComputerName $IP -Credential $Credential -ScriptBlock { C:\Users\administrator\Desktop\script\winEnt2.ps1 }'
 
-##mensaje:Reiniciando y ultimos retoques
+##mensaje:Reiniciando y ultimos retoques. Tiempo estimado 90"
 
-sleep 40
+sleep 60
 
 vboxmanage guestcontrol winEnt --username "Administrator" --password "$$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"
 

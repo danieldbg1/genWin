@@ -14,10 +14,6 @@ sleep 40
 
 ##mensaje:Configurando el entorno...
 
-vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
-
-vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
-
 vboxmanage guestcontrol winServer --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
 
 vboxmanage guestcontrol winServer --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"

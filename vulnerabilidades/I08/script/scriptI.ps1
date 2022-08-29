@@ -35,8 +35,6 @@ Get-NetFirewallRule SNMP-In-UDP | Disable-NetFirewallRule
 New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\PermittedManagers"  -Name 2 -Value '192.168.56.1'
 
 
-
-##configuracion_script_final:net user Administrator '$password_rand1'
 ##configuracion_script_final:Start-Service sshd
 ##configuracion_script_final:Start-service snmp
 

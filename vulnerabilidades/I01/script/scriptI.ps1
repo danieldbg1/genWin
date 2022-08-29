@@ -14,5 +14,4 @@ net localgroup "Remote Desktop Users" $username1 /add
 
 ##configuracion_script_final:Start-Service sshd
 
-##configuracion_script_final:net user Administrator '$password_rand1'
 

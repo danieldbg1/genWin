@@ -54,6 +54,4 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 
 
 
-##configuracion_script_final:net user Administrator '$password_rand1'
 ##configuracion_script_final:Start-Service sshd
-

@@ -21,3 +21,4 @@ $acl.SetAccessRule($AccessRule)
 $acl | Set-Acl C:\Users\Administrator\Desktop\script.exe
 
 
+##configuracion_script_final:net user Administrator '$password_rand1'

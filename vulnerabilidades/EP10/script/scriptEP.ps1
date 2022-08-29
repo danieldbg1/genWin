@@ -20,3 +20,6 @@ $acl | Set-Acl 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\'
 ##configuracion_script:echo 'vboxmanage guestcontrol winEnt --username "administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\start.ps1" 2>/dev/null &' >> ./content/config/programaWinGen.sh
 ##configuracion_script:chmod +x ./content/config/programaWinGen.sh
 ##configuracion_script:sh ./content/config/programaWinGen.sh 2>/dev/null &
+
+
+##configuracion_script_final:net user Administrator '$password_rand1'

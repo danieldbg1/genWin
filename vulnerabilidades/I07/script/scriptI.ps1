@@ -52,13 +52,9 @@ Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessT
 ##configuracion_script:echo 'Set-ItemProperty "IIS:\\Sites\\ftp_usuario" -Name ftpServer.security.authentication.basicAuthentication.enabled -Value $true' >> ./content/config/script/scriptWIN2.ps1
 ##configuracion_script:echo 'Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessType="Allow";roles="";permissions="Read,Write";users="*"} -PSPath IIS:\ -location "ftp_usuario"' >> ./content/config/script/scriptWIN2.ps1
 
-
 ##configuracion_script:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "$password_rand1" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Path ./content/config/script/scriptWIN2.ps1 -Destination "C:\Users\administrator\Desktop\script\scriptWIN2.ps1" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
 ##configuracion_script:vboxmanage guestcontrol winEnt --username "Administrator" --password "$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\scriptWIN2.ps1"
 
-
-
-##configuracion_script_final:net user Administrator '$password_rand1'
 ##configuracion_script_final:Start-Service sshd
 
 

@@ -30,4 +30,3 @@ Set-ItemProperty "IIS:\Sites\ftp_server" -Name ftpServer.security.authentication
 #Habilitar conexion usuario:
 Add-WebConfiguration "/system.ftpServer/security/authorization" -value @{accessType="Allow";roles="";permissions="Read,Write";users="*"} -PSPath IIS: -location "ftp_server"
 
-##configuracion_script_final:net user Administrator '$password_rand1'

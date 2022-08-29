@@ -3,3 +3,4 @@ pwsh
 steghide
 figlet
 python3
+virtualbox
