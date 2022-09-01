@@ -78,7 +78,7 @@
 		style="float: margin-right: 10px;" />
 	</p>
 	
-¿Cómo ejecutar la genWin.py?
+¿Cómo ejecutar genWin.py?
 ======
 El programa puede generar un entorno vulnerable de forma aleatoria o s ele pueden pasar las vulnerabilidades que el usuario quiera configurar. Todas las vulnerabilidades configuradas están descritas en el archivo [listaVulerabilidades.txt](./extra/listaVulerabilidades.txt).
 
