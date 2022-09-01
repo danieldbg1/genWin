@@ -84,14 +84,14 @@ El programa puede generar un entorno vulnerable de forma aleatoria o s ele puede
 
 
 <p align="center">
-<img src="./Images/4.png"
-	alt="4.png"
+<img src="./Images/3.png"
+	alt="3.png"
 	style="float: margin-right: 10px;" />
 </p>
 
 
 <p align="center">
-<img src="./Images/5.png"
-	alt="5.png"
+<img src="./Images/4.png"
+	alt="4.png"
 	style="float: margin-right: 10px;" />
 </p>
