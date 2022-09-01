@@ -8,14 +8,14 @@ I01 - Hydra ssh - Configurado
 I02 - Hydra smb y esteganografía - Configurado
 I03 - Hydra SMB y ssh con id_rsa + local ftp anonymous - Configurado
 I04 - Hydra SMB y winrm - Configurado
-I05 - SMB Relay - Configurado 
+I05 - Envenenamineto de red - Configurado 
 I06 - FTP anonymous - Configurado
-I07 - FTP + id_rsa + local ftp anonymous - Configurado
+I07 - Hydra FTP + id_rsa + local ftp anonymous - Configurado
 I08 - SNMP - Configurado
+
+
 I09 - IPv6 + hydra ssh - No configurado, no funciona el hydra, la conexion ssh si la hace
-
-
-I0X - SNMP(snmpwalk) - No sé como configurar
+I0X - SNMP(snmpwalk) - No configurado
 
 
 EP01 - nc.exe - Configurado
@@ -33,19 +33,18 @@ EP12 - AlwaysInstallElevated(msiexec.exe) - Configurado
 
 
 
-EPX - Unquoted Services path - No configurado - No se crea el servicio correctamente con sc.exe y no puedo iniciarlo
+EPX - Unquoted Services path - No configurado
 
 
 
-AD01 - SMB relay + EP - Configurado
-AD02 - SMB relay + RCE - Configurado
+AD01 - SMB Relay + dump SAM - Configurado
+AD02 - SMB relay - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
-AD04 - Kerberos - Configurado, pero falta poner alguna cosa mas 
-AD05 - ASRPtoast - Configurado, pero falta poner alguna cosa mas
+AD04 - Kerberos - Configurado, pero falta Ep 
+AD05 - ASRPtoast - Configurado, pero falta Ep
+
 
 AD06 - Pass the Hash - No configurado
-
-
 ADX - Bloodhound - No Configurado
 
 
@@ -65,13 +64,13 @@ Consiste en hacer fuerza bruta al protocolo FTP. Al tener privilegios de escritu
 I04 - Hydra SMB y winrm:
 Consiste en hacer fuerza bruta al protocolo smb y obtener un archivo con credenciales y hacer la intrusion por winrm(evil-winrm)
 
-I05 - SMB Relay:
+I05 - Envenenamineto de red:
 Consiste en desplegar el responder para obtener un hash y romperlo con john.
 
 I06 - FTP anonymous
 Consiste en entrar al servidor ftp sin credenciales, ya que esta la conexion como anonymous activada y obtener credenciales.
 
-I07 - FTP + id_rsa + local ftp anonymous:
+I07 - Hydra FTP + id_rsa + local ftp anonymous:
 Consiste en hacer fuerza bruta al protocolo FTP y acceder con permisos de escritura, crear carpeta .ssh e introducir un archivo authorized_keys con una clave publica creada previamente para entrar por ssh sin passwords. Una vez dentro, escanear los puertos abiertos y entrar en otro servidor ftp local, como anoymous y obtener credenciales de otro usuario.
 
 I08 - SNMP:
@@ -106,10 +105,10 @@ EP010 - start menu(Crear ps1 en el path)
 Se puede leer el los archivos en el directorio C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp, por lo que podemos ver el codigo y este codgio ejecuta otro archivo. En ese archivo, se tiene privilegios de escritura, por lo que se puede poner un comando y asi poder hacer una reverse shell y conectarnos como el usuario que inicie sesion (en este caso el administrador).
 
 
-AD01 - SMB relay + dump SAM:
+AD01 - Envenamiento + dump SAM:
 Consiste en realizar un envenamiento de red y obtener un hash NTLMv2 y usarlo para obtener la SAM del windows enterprise siempre y cuando el hash sea de un usuario administrador.
 
-AD02 - SMB relay + RCE:
+AD02 - SMB relay:
 Misma mecanica que el anterior.
 
 AD03 - Enumeracion rpcclient + Golden Ticket Attack:

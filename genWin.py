@@ -230,8 +230,6 @@ def crearEntorno():
                 ip = aux.stdout.read().decode().strip()
         
             linea = linea.replace('$IP', ip)
-            
-        print(linea.strip()+"\n")
         
         if "2>/dev/null &" in linea:
             os.system(linea)
