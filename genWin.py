@@ -262,12 +262,9 @@ def actualizar_consola(vulI, vulEP):
     print("\n\nMucha suerte y good hack!!!")
 
 def borrarConf():
-    os.system("rm -r content/config/ 2>/dev/null")
-    '''
-    #programaWinGen.sh??
     os.system("rm -r content/config/script/ 2>/dev/null")
     os.system("rm content/config/script.txt 2>/dev/null")
-    '''
+
 
 
 ############ Funciones AD ############
@@ -872,7 +869,7 @@ if __name__ == "__main__":
         configuracion_final()
         crearEntorno()
         actualizar_consola(vulI, vulEP)
-        #borrarConf()
+        borrarConf()
     else:
         eliminar_entorno_anterior()
         comprobar_red_host_only()
@@ -881,7 +878,7 @@ if __name__ == "__main__":
         configuracion_final_AD(vulAD)
         crearEntorno_AD()
         actualizar_consola_AD(vulAD)
-        #borrarConf_AD()
+        borrarConf()
     
 
     
