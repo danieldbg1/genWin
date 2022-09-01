@@ -9,21 +9,37 @@ vboxmanage controlvm winEnt nic1 hostonly vboxnet0
 
 sleep 40
 ##mensaje:Configurando el entorno...
+
 vboxmanage guestcontrol winServer --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
+
 vboxmanage guestcontrol winServer --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
+
 ##mensaje:winServer
+
 ##winServer:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/winServer -Destination "C:\Users\administrator\Desktop\script\" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
+
 ##winServer:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Invoke-Command -Authentication Negotiate -ComputerName $IP -Credential $Credential -ScriptBlock { C:\Users\administrator\Desktop\script\winServer1.ps1 }'
+
 sed -i 's/$IP/IP_winServer/g' ./content/config/script/winEnt/winEnt1.ps1
+
 ##mensaje:winEnt
+
 vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
+
 vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
+
 ##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/winEnt -Destination "C:\Users\administrator\Desktop\script" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
+
 vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\administrator\Desktop\script\winEnt1.ps1"
+
 ##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Invoke-Command -Authentication Negotiate -ComputerName $IP -Credential $Credential -ScriptBlock { C:\Users\administrator\Desktop\script\winEnt2.ps1 }'
+
 ##mensaje:Reiniciando y ultimos retoques. Tiempo estimado 90"
+
 sleep 60
+
 vboxmanage guestcontrol winEnt --username "Administrator" --password "$$password_rand1" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\Administrator\Desktop\script\script_final.ps1"
+
 echo '#!/bin/bash' >> ./content/config/programaWinGen.sh
 echo 'while true' >> ./content/config/programaWinGen.sh
 echo 'do' >> ./content/config/programaWinGen.sh

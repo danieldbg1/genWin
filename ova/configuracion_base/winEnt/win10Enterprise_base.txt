@@ -1,21 +1,33 @@
-##mensaje:Creando maquina virtual a partir del archivo ova
+##mensaje:Asegurese de tener buena conexion a internet
+
+##mensaje:Creando maquina virtual a partir del archivo ova. Este proceso puede tardar hasta 15 minutos
 
 vboxmanage import $fichero --vsys 0 --vmname "winEnt" --group "" --memory 2048 
 ##mensaje:Maquina creada con exito
 vboxmanage sharedfolder add winEnt --name config --hostpath content --automount
 vboxmanage startvm winEnt --type headless
+
 ##mensaje:Configurando maquina virtual
+
 sleep 30
+
 vboxmanage controlvm winEnt nic1 nat
 vboxmanage guestcontrol winEnt --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Set-ExecutionPolicy Unrestricted -Force"
 vboxmanage guestcontrol winEnt --username "Administrator" --password "$password" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Z:\win10Enterprise.ps1"
 
-sleep 30
+##mensaje:Reiniciando maquina virtual
+
+sleep 60
+
 vboxmanage controlvm winEnt poweroff
 vboxmanage sharedfolder remove winEnt -name config
+
 rm -r ./content
+
 ##mensaje:Maquina configurada
-##mensaje:Creando ova final, este ultimo paso puede tardar varios minutos.
+
+##mensaje:Creando ova final
+
 vboxmanage modifyvm winEnt --memory 32
 vboxmanage export winEnt -o ./ova/winEnterprise.ova
 

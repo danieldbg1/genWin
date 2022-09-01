@@ -17,8 +17,6 @@ PowerShell Set-MpPreference -MAPSReporting Disabled
 #Disable Automatic Sample Submission
 Set-MpPreference -SubmitSamplesConsent 2
 
-#Desactivar Tamper Protection
-
 #Desactivar antivirus en tiempo real:
 Set-MpPreference -DisableRealtimeMonitoring $true
 
@@ -38,10 +36,11 @@ Add-WindowsCapability -Online -Name "SNMP.Client~~~~0.0.1.0"
 #Instalar modulo AD
 Get-WindowsCapability -Name RSAT.ActiveDirectory* -Online | Add-WindowsCapability -Online
 
-
 #Cambiar nombre PC
 Rename-Computer -NewName danielpc
 
+#Cambiar contraseña al Administrador
+net user Administrator hola
 
 #Borrar historial powershell
 Clear-History

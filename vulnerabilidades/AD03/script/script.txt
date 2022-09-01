@@ -24,6 +24,10 @@ vboxmanage guestcontrol winServer --username "Administrator" --password "hola" r
 
 sed -i 's/$IP/IP_winServer/g' ./content/config/script/winEnt/winEnt1.ps1
 
+vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "Enable-PSRemoting -SkipNetworkProfileCheck"
+
+vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "winrm quickconfig -Force"
+
 ##winEnt:pwsh -c '$user = "administrator";$pass = ConvertTo-SecureString -String "hola" -AsPlainText -Force;$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pass;Copy-Item -Recurse -Path ./content/config/script/winEnt -Destination "C:\Users\administrator\Desktop\script\" -ToSession (New-PSSession -Authentication Negotiate -ComputerName $IP -Credential $Credential)'
 
 vboxmanage guestcontrol winEnt --username "Administrator" --password "hola" run -- "C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe" "C:\Users\administrator\Desktop\script\winEnt1.ps1"

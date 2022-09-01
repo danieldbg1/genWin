@@ -1,6 +1,5 @@
 User.txt
 
-
 nano /etc/responder/responder.conf -> Smb y http a Off -> Acordarse de ponerlo luego en On para otros ataques.
 crackmapexec smb 192.168.56.0/24 -> para saber ips y guardarlas en .txt y dominio
 sudo responder -I vboxnet0 -dw

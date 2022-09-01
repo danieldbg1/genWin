@@ -14,10 +14,6 @@ I07 - Hydra FTP + id_rsa + local ftp anonymous - Configurado
 I08 - SNMP - Configurado
 
 
-I09 - IPv6 + hydra ssh - No configurado, no funciona el hydra, la conexion ssh si la hace
-I0X - SNMP(snmpwalk) - No configurado
-
-
 EP01 - nc.exe - Configurado
 EP02 - cmstp.exe - Configurado
 EP03 - wuauclt.exe - Configurado
@@ -25,15 +21,11 @@ EP04 - msiexec.exe - Configurado
 EP05 - SeBackupPrivilege(reg.exe) - Configurado
 EP06 - tttracer.exe - Configurado
 EP07 - rundll32.exe - Configurado
-EP08 - Mimikatz - No Configurado, no puedo ejecutar cmdkeys de forma remota 
+EP08 - No configurado
 EP09 - Start menu(Modificar archivo) - Configurado
 EP10 - Start menu(Crear ps1 en el path) - Configurado
 EP11 - DLL Hijacking - Configurado 
 EP12 - AlwaysInstallElevated(msiexec.exe) - Configurado 
-
-
-
-EPX - Unquoted Services path - No configurado
 
 
 
@@ -42,10 +34,6 @@ AD02 - SMB relay - Configurado
 AD03 - Enumeracion rpcclient + Golden Ticket (file.ccache) - Configurado 
 AD04 - Kerberos - Configurado, pero falta Ep 
 AD05 - ASRPtoast - Configurado, pero falta Ep
-
-
-AD06 - Pass the Hash - No configurado
-ADX - Bloodhound - No Configurado
 
 
 
@@ -115,10 +103,6 @@ AD03 - Enumeracion rpcclient + Golden Ticket Attack:
 Consiste en realizar una enumeracion básica con la herramienta rpcclient con una credencial valida que nos otorga el programa al principio. En esta enumeracion, se obtiene la credencial de un usuario dentro del grupo administradores, pudiendo conectarse al DC y realizar un Golden Ticket attack.
 
 
-AD04 - Kerberos: 
-
-
-AD05 - ASRPtoast:
 
 
 
