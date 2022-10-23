@@ -16,14 +16,8 @@
  
  Pasos previos 
  ======
- Antes de poder ejecutar la herramienta, hace falta configurar dos archivos ova, uno con Windows Server 2022 y otro con Windows 10 Enterprise. Para ello hay dos opciones:
- 1. Descargar los archivos ya configurados de los siguientes enlaces:
- 	- Windows 10 Enterprise -> https://drive.google.com/file/d/1VgTg8QotYyTq66W06LO0PS-ejrmvfo7a/view?usp=sharing
-	- Windows Server 2022 -> https://drive.google.com/file/d/1iZS8cxENVKeMnua4bSe6Y8epVxdj5giR/view?usp=sharing
+ Antes de poder ejecutar la herramienta, hace falta configurar dos archivos ova, uno con Windows Server 2022 y otro con Windows 10 Enterprise. Crear y configurar los archivos a mano desde cero, ayudándonos de una opción que ofrece el generador.
  
- 2. Crear y configurar los archivos a mano desde cero, ayudándonos de una opción que ofrece el generador.
- 
- Estos son los pasos para la segunda opción:
 1. Descargar iso:
 	- Windows 10 Enterprise -> https://www.microsoft.com/es-es/evalcenter/evaluate-windows-10-enterprise
 	- Windows server 2022 -> https://www.microsoft.com/es-es/evalcenter/evaluate-windows-server-2022
